@@ -13,23 +13,32 @@ namespace DialogueSystem.Windows
         {
             AddManipulators();
             AddGridBackground();
-            CreateNode();
             AddStyles();
         }
 
-        private void CreateNode()
+        private DSNode CreateNode(Vector2 position)
         {
             DSNode node = new DSNode();
-            node.Initialize();
+            node.Initialize(position);
             node.Draw();
-            AddElement(node);
+            return node;
         }
 
         private void AddManipulators()
         {
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+            this.AddManipulator(CreateNodeContextualMenu());
             this.AddManipulator(new ContentDragger());
         }
+
+        private IManipulator CreateNodeContextualMenu()
+        {
+            ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
+                menuEvent => menuEvent.menu.AppendAction("Create Node", actionEvent => AddElement(CreateNode(actionEvent.eventInfo.localMousePosition))));
+
+            return contextualMenuManipulator;
+        }
+
         private void AddGridBackground()
         {
             GridBackground gridBackground = new GridBackground();
