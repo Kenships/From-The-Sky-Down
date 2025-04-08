@@ -1,40 +1,40 @@
-using System;
-using Editor.DialogueSystem.Windows;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-public class DSEditorWindow : EditorWindow
+namespace DialogueSystem.Windows
 {
-    [MenuItem("Window/DS/Dialogue Graph")] 
-    public static void Open()
+    public class DSEditorWindow : EditorWindow
     {
-        GetWindow<DSEditorWindow>("Dialogue Graph");
-    }
+        [MenuItem("Window/DS/Dialogue Graph")] 
+        public static void Open()
+        {
+            GetWindow<DSEditorWindow>("Dialogue Graph");
+        }
 
-    private void CreateGUI()
-    {
-        AddGraphView();
-        AddStyles();
-    }
+        private void CreateGUI()
+        {
+            AddGraphView();
+            AddStyles();
+        }
 
     
 
-    private void AddGraphView()
-    {
-        DSGraphView graphView = new DSGraphView();
+        private void AddGraphView()
+        {
+            DSGraphView graphView = new DSGraphView();
         
-        graphView.StretchToParentSize();
+            graphView.StretchToParentSize();
         
         
         
-        rootVisualElement.Add(graphView);
-    }
+            rootVisualElement.Add(graphView);
+        }
     
-    private void AddStyles()
-    {
-        StyleSheet styleSheet = EditorGUIUtility.Load("DialogueSystem/DSVariables.uss") as StyleSheet;
+        private void AddStyles()
+        {
+            StyleSheet styleSheet = EditorGUIUtility.Load("DialogueSystem/DSVariables.uss") as StyleSheet;
         
-        rootVisualElement.styleSheets.Add(styleSheet);
+            rootVisualElement.styleSheets.Add(styleSheet);
+        }
     }
 }

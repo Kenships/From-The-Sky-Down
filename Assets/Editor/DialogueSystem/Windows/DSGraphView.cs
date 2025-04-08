@@ -1,19 +1,30 @@
+
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Editor.DialogueSystem.Windows
+namespace DialogueSystem.Windows
 {
+    using Elements;
     public class DSGraphView : GraphView
     {
         public DSGraphView()
         {
             AddManipulators();
             AddGridBackground();
+            CreateNode();
             AddStyles();
         }
-        
+
+        private void CreateNode()
+        {
+            DSNode node = new DSNode();
+            node.Initialize();
+            node.Draw();
+            AddElement(node);
+        }
+
         private void AddManipulators()
         {
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
