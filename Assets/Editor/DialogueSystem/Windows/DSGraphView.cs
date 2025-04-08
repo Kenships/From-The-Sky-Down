@@ -1,4 +1,5 @@
 
+using System;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.UIElements;
 namespace DialogueSystem.Windows
 {
     using Elements;
+    using Enumerations;
     public class DSGraphView : GraphView
     {
         public DSGraphView()
@@ -16,9 +18,11 @@ namespace DialogueSystem.Windows
             AddStyles();
         }
 
-        private DSNode CreateNode(Vector2 position)
+        private DSNode CreateNode(DSDialogueType dialogueType, Vector2 position)
         {
-            DSNode node = new DSNode();
+            Type nodeType = Type.GetType($"DialogueSystem.Elements.DS{dialogueType}Node");
+            DSNode node = Activator.CreateInstance(nodeType) as DSNode;
+            ;
             node.Initialize(position);
             node.Draw();
             return node;
@@ -27,14 +31,15 @@ namespace DialogueSystem.Windows
         private void AddManipulators()
         {
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
-            this.AddManipulator(CreateNodeContextualMenu());
             this.AddManipulator(new ContentDragger());
+            this.AddManipulator(CreateNodeContextualMenu("Add Node (Single Choice)", DSDialogueType.SingleChoice));
+            this.AddManipulator(CreateNodeContextualMenu("Add Node (Multiple Choice)", DSDialogueType.MultipleChoice));
         }
 
-        private IManipulator CreateNodeContextualMenu()
+        private IManipulator CreateNodeContextualMenu(string actionTitle, DSDialogueType dialogueType)
         {
             ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
-                menuEvent => menuEvent.menu.AppendAction("Create Node", actionEvent => AddElement(CreateNode(actionEvent.eventInfo.localMousePosition))));
+                menuEvent => menuEvent.menu.AppendAction(actionTitle, actionEvent => AddElement(CreateNode(dialogueType, actionEvent.eventInfo.localMousePosition))));
 
             return contextualMenuManipulator;
         }
