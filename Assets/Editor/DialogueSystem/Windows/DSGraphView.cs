@@ -22,7 +22,6 @@ namespace DialogueSystem.Windows
         {
             Type nodeType = Type.GetType($"DialogueSystem.Elements.DS{dialogueType}Node");
             DSNode node = Activator.CreateInstance(nodeType) as DSNode;
-            ;
             node.Initialize(position);
             node.Draw();
             return node;
@@ -32,6 +31,8 @@ namespace DialogueSystem.Windows
         {
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
             this.AddManipulator(new ContentDragger());
+            this.AddManipulator(new SelectionDragger());
+            this.AddManipulator(new RectangleSelector());
             this.AddManipulator(CreateNodeContextualMenu("Add Node (Single Choice)", DSDialogueType.SingleChoice));
             this.AddManipulator(CreateNodeContextualMenu("Add Node (Multiple Choice)", DSDialogueType.MultipleChoice));
         }
@@ -53,9 +54,11 @@ namespace DialogueSystem.Windows
         }
         private void AddStyles()
         {
-            StyleSheet styleSheet = EditorGUIUtility.Load("DialogueSystem/DSGraphViewStyles.uss") as StyleSheet;
+            StyleSheet graphStyleSheet = EditorGUIUtility.Load("DialogueSystem/DSGraphViewStyles.uss") as StyleSheet;
+            StyleSheet nodeStyleSheet = EditorGUIUtility.Load("DialogueSystem/DSNodeStyles.uss") as StyleSheet;
         
-            styleSheets.Add(styleSheet);
+            styleSheets.Add(graphStyleSheet);
+            styleSheets.Add(nodeStyleSheet);
         }
     }
     
