@@ -1,4 +1,5 @@
 using DialogueSystem.Elements;
+using DialogueSystem.Utilities;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -22,9 +23,7 @@ namespace DialogueSystem.Elements
 
             foreach (var choice in Choices)
             {
-                Port choicePort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
-
-                choicePort.portName = choice;
+                Port choicePort = this.CreatePort(choice);
                 
                 outputContainer.Add(choicePort);
             }
