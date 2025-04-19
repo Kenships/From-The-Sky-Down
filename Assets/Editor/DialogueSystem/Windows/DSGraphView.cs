@@ -13,12 +13,19 @@ namespace DialogueSystem.Windows
     using Enumerations;
     public class DSGraphView : GraphView
     {
-        public DSGraphView()
+        private DSEditorWindow editorWindow;
+        private DSSearchWindow searchWindow;
+        public DSGraphView(DSEditorWindow dsEditorWindow)
         {
+            editorWindow = dsEditorWindow;
             AddManipulators();
+            AddSearchWindow();
             AddGridBackground();
             AddStyles();
         }
+
+       
+
         #region Overrides Methods
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
@@ -50,20 +57,20 @@ namespace DialogueSystem.Windows
         private IManipulator CreateGroupContextualMenu()
         {
             ContextualMenuManipulator createGroupContextualMenu = new ContextualMenuManipulator(
-                menuEvent => menuEvent.menu.AppendAction("Add Group", actionEvent => AddElement(CreateGroup("Dialogue Group", actionEvent.eventInfo.localMousePosition))));
+                menuEvent => menuEvent.menu.AppendAction("Add Group", actionEvent => AddElement(CreateGroup("Dialogue Group", GetLocalMousePosition(actionEvent.eventInfo.localMousePosition)))));
             return createGroupContextualMenu;
         }
         private IManipulator CreateNodeContextualMenu(string actionTitle, DSDialogueType dialogueType)
         {
             ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
-                menuEvent => menuEvent.menu.AppendAction(actionTitle, actionEvent => AddElement(CreateNode(dialogueType, actionEvent.eventInfo.localMousePosition))));
+                menuEvent => menuEvent.menu.AppendAction(actionTitle, actionEvent => AddElement(CreateNode(dialogueType, GetLocalMousePosition(actionEvent.eventInfo.localMousePosition)))));
 
             return contextualMenuManipulator;
         }
         #endregion
         
         #region Elements Creation
-        private DSNode CreateNode(DSDialogueType dialogueType, Vector2 position)
+        public DSNode CreateNode(DSDialogueType dialogueType, Vector2 position)
         {
             Type nodeType = Type.GetType($"DialogueSystem.Elements.DS{dialogueType}Node");
             DSNode node = Activator.CreateInstance(nodeType) as DSNode;
@@ -72,7 +79,7 @@ namespace DialogueSystem.Windows
             return node;
         }
 
-        private GraphElement CreateGroup(string dialogueGroup, Vector2 eventInfoLocalMousePosition)
+        public GraphElement CreateGroup(string dialogueGroup, Vector2 eventInfoLocalMousePosition)
         {
             Group group = new Group
             {
@@ -87,6 +94,19 @@ namespace DialogueSystem.Windows
         #endregion
         
         #region Elements Addtion and Styles
+
+        private void AddSearchWindow()
+        {
+            if (!searchWindow)
+            {
+                searchWindow = ScriptableObject.CreateInstance<DSSearchWindow>();
+                searchWindow.Initialize(this);
+            }
+
+            nodeCreationRequest = context =>
+                SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindow);
+        }
+
         private void AddGridBackground()
         {
             GridBackground gridBackground = new GridBackground();
@@ -94,12 +114,30 @@ namespace DialogueSystem.Windows
             
             Insert(0, gridBackground);
         }
+
         private void AddStyles()
         {
             this.AddStyleSheets(
                 "DialogueSystem/DSGraphViewStyles.uss",
                 "DialogueSystem/DSNodeStyles.uss");
             
+        }
+        #endregion
+
+        #region Utilities
+
+        public Vector2 GetLocalMousePosition(Vector2 mousePosition, bool isSearchWindow = false)
+        {
+            
+            Vector2 worldMousePosition = mousePosition;
+
+            if (isSearchWindow)
+            {
+                worldMousePosition -= editorWindow.position.position;
+            }
+            
+            Vector2 localMousePosition = contentViewContainer.WorldToLocal(worldMousePosition);
+            return localMousePosition;
         }
         #endregion
     }

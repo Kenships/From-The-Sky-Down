@@ -23,7 +23,7 @@ namespace DialogueSystem.Windows
         #region Elements Addition and Styles
         private void AddGraphView()
         {
-            DSGraphView graphView = new DSGraphView();
+            DSGraphView graphView = new DSGraphView(this);
         
             graphView.StretchToParentSize();
         

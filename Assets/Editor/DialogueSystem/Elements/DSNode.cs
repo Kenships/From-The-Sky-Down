@@ -45,7 +45,7 @@ namespace DialogueSystem.Elements
             customDataContainer.AddClasses(
                 "ds-node__custom-data-container");
             
-            Foldout textFoldout = DSElementsUtility.CreateFoldout("Dialogue Text", true);
+            Foldout textFoldout = DSElementsUtility.CreateFoldout("Dialogue Text");
 
             TextField textField = DSElementsUtility.CreateTextArea(Text);
             
