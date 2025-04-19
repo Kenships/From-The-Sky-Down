@@ -5,7 +5,7 @@ namespace DialogueSystem.Elements
 {
     public class DSGroup : Group
     {
-        public string OldTitle { get; set; };
+        public string OldTitle { get; set; }
         
         private Color defaultBorderColor;
         private float defaultBorderWidth;
@@ -13,7 +13,7 @@ namespace DialogueSystem.Elements
         public DSGroup(string groupTitle, Vector2 position)
         {
             title = groupTitle;
-            oldTitle = groupTitle;
+            OldTitle = groupTitle;
             
             SetPosition(new Rect(position, Vector2.zero));
             

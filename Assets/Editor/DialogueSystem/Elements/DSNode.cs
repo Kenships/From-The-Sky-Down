@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -32,7 +33,29 @@ namespace DialogueSystem.Elements
             mainContainer.AddToClassList("ds-node__main-container");
             extensionContainer.AddToClassList("ds-node__extension-container");
         }
-
+        #region Overrided Methods
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+        {
+            if (HasConnectedInputPorts())
+            {
+                evt.menu.AppendAction("Disconnect Input Ports", action => DisconnectInputPorts());
+            }
+            else
+            {
+                evt.menu.AppendAction("Disconnect Input Ports", action => DisconnectInputPorts(), DropdownMenuAction.Status.Disabled);
+            }
+            if (HasConnectedOutputPorts())
+            {
+                evt.menu.AppendAction("Disconnect Output Ports", action => DisconnectOutputPorts());
+            }
+            else
+            {
+                evt.menu.AppendAction("Disconnect Output Ports", action => DisconnectOutputPorts(), DropdownMenuAction.Status.Disabled);
+            }
+            
+            base.BuildContextualMenu(evt);
+        }
+        #endregion
         public virtual void Draw()
         {
             TextField dialogueNameTextField = DSElementsUtility.CreateTextField(DialogueName, callback => 
@@ -87,6 +110,52 @@ namespace DialogueSystem.Elements
             
             RefreshExpandedState();
         }
+        #region Utility Methods
+
+        public void DisconnectAllPorts()
+        {
+            DisconnectInputPorts();
+            DisconnectOutputPorts();
+        }
+
+        private void DisconnectInputPorts()
+        {
+            DisconnectPorts(inputContainer);
+        }
+        private void DisconnectOutputPorts()
+        {
+            DisconnectPorts(outputContainer);
+        }
+        private void DisconnectPorts(VisualElement container)
+        {
+            foreach (Port port in container.Children())
+            {
+                if (port.connected)
+                {
+                    graphView.DeleteElements(port.connections);
+                }
+            }
+        }
+
+        private bool HasConnectedInputPorts()
+        {
+            return HasConnectedPorts(inputContainer);
+        }
+        private bool HasConnectedOutputPorts()
+        {
+            return HasConnectedPorts(outputContainer);
+        }
+
+        private bool HasConnectedPorts(VisualElement container)
+        {
+            foreach (Port port in container.Children())
+            {
+                if (port.connected) return true;
+            }
+            
+            return false;
+        }
+        
 
         public void SetErrorStyle(Color color)
         {
@@ -97,5 +166,6 @@ namespace DialogueSystem.Elements
         {
             mainContainer.style.backgroundColor = defaultBackgroundColor;
         }
+        #endregion
     }
 }
