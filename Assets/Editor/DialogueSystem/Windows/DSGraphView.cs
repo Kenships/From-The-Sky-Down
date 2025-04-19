@@ -1,7 +1,9 @@
 
 using System;
 using System.Collections.Generic;
+using DialogueSystem.Data.Error;
 using DialogueSystem.Utilities;
+using Obvious.Soap;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -15,12 +17,24 @@ namespace DialogueSystem.Windows
     {
         private DSEditorWindow editorWindow;
         private DSSearchWindow searchWindow;
+        private DSNodeErrorScriptableDictionary ungroupedNodes;
+        private DSGroupScriptableDictionary groupedNodes;
+        
         public DSGraphView(DSEditorWindow dsEditorWindow)
         {
             editorWindow = dsEditorWindow;
+            
+            ungroupedNodes = ScriptableObject.CreateInstance<DSNodeErrorScriptableDictionary>();
+            groupedNodes = ScriptableObject.CreateInstance<DSGroupScriptableDictionary>();
+            
             AddManipulators();
             AddSearchWindow();
             AddGridBackground();
+            
+            OnElementsDeleted(); 
+            OnGroupElementsAdded();
+            OnGroupElementsRemoved();
+            
             AddStyles();
         }
 
@@ -74,8 +88,12 @@ namespace DialogueSystem.Windows
         {
             Type nodeType = Type.GetType($"DialogueSystem.Elements.DS{dialogueType}Node");
             DSNode node = Activator.CreateInstance(nodeType) as DSNode;
-            node.Initialize(position);
+            
+            node.Initialize(position, this);
             node.Draw();
+
+            AddUngroupedNode(node);
+            
             return node;
         }
 
@@ -87,9 +105,182 @@ namespace DialogueSystem.Windows
             };
             
             group.SetPosition(new Rect(eventInfoLocalMousePosition, Vector2.zero));
-            //group.AddToClassList("ds-group");
             
             return group;
+        }
+
+        #endregion
+
+        #region Callbacks
+
+        private void OnElementsDeleted()
+        {
+            deleteSelection = (operationName, askUser) =>
+            {
+                List<DSNode> nodesToDelete = new List<DSNode>();
+                foreach (GraphElement element in selection)
+                {
+                    if (element is DSNode node)
+                    {
+                        nodesToDelete.Add(node);
+                    }
+                }
+
+                foreach (DSNode node in nodesToDelete)
+                {
+                    node.Group?.RemoveElement(node);
+                    RemoveUngroupedNode(node);
+                    
+                    RemoveElement(node);
+                }
+            };
+        }
+
+        private void OnGroupElementsAdded()
+        {
+            elementsAddedToGroup = (group, elements) =>
+            {
+                foreach (GraphElement element in elements)
+                {
+                    if (element is DSNode node)
+                    {
+                        RemoveUngroupedNode(node);
+                        AddGroupedNode(node, group);
+                    }
+                }
+            };
+        }
+
+        private void OnGroupElementsRemoved()
+        {
+            elementsRemovedFromGroup = (group, elements) =>
+            {
+                foreach (GraphElement element in elements)
+                {
+                    if (element is DSNode node)
+                    {
+                        RemoveGroupedNode(node, group);
+                        AddUngroupedNode(node);
+                    }
+                }
+            };
+        }
+
+        #endregion
+        
+        #region Repeated Elements
+        public void AddUngroupedNode(DSNode node)
+        {
+            string nodeName = node.DialogueName;
+
+            if (!ungroupedNodes.ContainsKey(nodeName))
+            {
+                DSNodeErrorData nodeErrorData = new DSNodeErrorData();
+                
+                nodeErrorData.Nodes.Add(node);
+                
+                ungroupedNodes.Add(nodeName, nodeErrorData);
+
+                return;
+            }
+            
+            List<DSNode> ungroupedNodesList = ungroupedNodes[nodeName].Nodes;
+            
+            ungroupedNodesList.Add(node);
+            
+            Color errorColor = ungroupedNodes[nodeName].ErrorData.Color;
+            
+            node.SetErrorStyle(errorColor);
+
+            if (ungroupedNodesList.Count == 2)
+            {
+                ungroupedNodesList[0].SetErrorStyle(errorColor);
+            }
+        }
+
+        public void RemoveUngroupedNode(DSNode node)
+        {
+            string nodeName = node.DialogueName;
+            
+            List<DSNode> ungroupedNodesList = ungroupedNodes[nodeName].Nodes;
+            
+            ungroupedNodesList.Remove(node);
+            
+            node.ResetStyle();
+
+            switch (ungroupedNodesList.Count)
+            {
+                case 1:
+                    ungroupedNodesList[0].ResetStyle();
+                    return;
+                case 0:
+                    ungroupedNodes.Remove(nodeName);
+                    break;
+            }
+        }
+        public void AddGroupedNode(DSNode node, Group group)
+        {
+            string nodeName = node.DialogueName;
+            
+            node.Group = group;
+            
+            if (!groupedNodes.ContainsKey(group)){
+                groupedNodes.Add(group, ScriptableObject.CreateInstance<DSNodeErrorScriptableDictionary>());
+            }
+
+            if (!groupedNodes[group].ContainsKey(nodeName))
+            {
+                DSNodeErrorData nodeErrorData = new DSNodeErrorData();
+                
+                nodeErrorData.Nodes.Add(node);
+                
+                groupedNodes[group].Add(nodeName, nodeErrorData);
+
+                return;
+            }
+
+            List<DSNode> groupNodesList = groupedNodes[group][nodeName].Nodes;
+            
+            groupNodesList.Add(node);
+            
+            Color errorColor = groupedNodes[group][nodeName].ErrorData.Color;
+            
+            node.SetErrorStyle(errorColor);
+
+            if (groupNodesList.Count == 2)
+            {
+                groupNodesList[0].SetErrorStyle(errorColor);
+            }
+        }
+
+        public void RemoveGroupedNode(DSNode node, Group group)
+        {
+            string nodeName = node.DialogueName;
+
+            node.Group = null;
+            
+            List<DSNode> groupNodesList = groupedNodes[group][nodeName].Nodes;
+            
+            groupNodesList.Remove(node);
+            
+            node.ResetStyle();
+
+            if (groupNodesList.Count == 1)
+            {
+                groupNodesList[0].ResetStyle();
+
+                return;
+            }
+
+            if (groupNodesList.Count == 0)
+            {
+                groupedNodes[group].Remove(nodeName);
+
+                if (groupedNodes[group].Count == 0)
+                {
+                    groupedNodes.Remove(group);
+                }
+            }
         }
         #endregion
         

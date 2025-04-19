@@ -6,12 +6,13 @@ using UnityEngine.UIElements;
 
 namespace DialogueSystem.Elements
 {
+    using Windows;
     using Enumerations;
     public class DSMultipleChoiceNode : DSNode
     {
-        public override void Initialize(Vector2 position)
+        public override void Initialize(Vector2 position , DSGraphView dsGraphView)
         {
-            base.Initialize(position);
+            base.Initialize(position, dsGraphView);
             
             DialogueType = DSDialogueType.MultipleChoice;
             
