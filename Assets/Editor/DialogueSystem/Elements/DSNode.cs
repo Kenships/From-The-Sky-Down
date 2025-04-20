@@ -58,13 +58,17 @@ namespace DialogueSystem.Elements
         #endregion
         public virtual void Draw()
         {
-            TextField dialogueNameTextField = DSElementsUtility.CreateTextField(DialogueName, callback => 
+            TextField dialogueNameTextField = DSElementsUtility.CreateTextField(DialogueName, null, callback => 
             {
+                TextField target = callback.target as TextField;
+
+                target.value = callback.newValue.RemoveWhiteSpaces().RemoveSpecialCharacters();
+                
                 if (Group == null)
                 {
                     graphView.RemoveUngroupedNode(this);
                 
-                    DialogueName = callback.newValue;
+                    DialogueName = target.value;
                 
                     graphView.AddUngroupedNode(this);
                     
@@ -75,7 +79,7 @@ namespace DialogueSystem.Elements
                 
                 graphView.RemoveGroupedNode(this, Group);
                 
-                DialogueName = callback.newValue;
+                DialogueName = target.value;
                 
                 graphView.AddGroupedNode(this, currentGroup);
             });
