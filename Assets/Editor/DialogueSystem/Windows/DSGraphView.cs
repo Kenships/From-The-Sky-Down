@@ -1,11 +1,10 @@
 
 using System;
 using System.Collections.Generic;
-using DialogueSystem.Data.Error;
-using DialogueSystem.Utilities;
-using Obvious.Soap;
+using AYellowpaper.SerializedCollections;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,13 +12,18 @@ namespace DialogueSystem.Windows
 {
     using Elements;
     using Enumerations;
+    using Utilities;
+    using Data.Error;
+    using Data.Save;
+    
+    
     public class DSGraphView : GraphView
     {
         private DSEditorWindow editorWindow;
         private DSSearchWindow searchWindow;
-        private DSNodeErrorScriptableDictionary ungroupedNodes;
-        private DSGroupErrorScriptableDictionary groups;
-        private DSGroupScriptableDictionary groupedNodes;
+        private SerializedDictionary<string, DSNodeErrorData> ungroupedNodes;
+        private SerializedDictionary<string, DSGroupErrorData> groups;
+        private SerializedDictionary<Group, SerializedDictionary<string, DSNodeErrorData>> groupedNodes;
         private int repeatedNamesAmount;
         public int RepeatedNamesAmount
         {
@@ -41,10 +45,10 @@ namespace DialogueSystem.Windows
         public DSGraphView(DSEditorWindow dsEditorWindow)
         {
             editorWindow = dsEditorWindow;
-            
-            ungroupedNodes = ScriptableObject.CreateInstance<DSNodeErrorScriptableDictionary>();
-            groups = ScriptableObject.CreateInstance<DSGroupErrorScriptableDictionary>();
-            groupedNodes = ScriptableObject.CreateInstance<DSGroupScriptableDictionary>();
+
+            ungroupedNodes = new SerializedDictionary<string, DSNodeErrorData>();
+            groups = new SerializedDictionary<string, DSGroupErrorData>();
+            groupedNodes = new SerializedDictionary<Group, SerializedDictionary<string, DSNodeErrorData>>();
             
             AddManipulators();
             AddSearchWindow();
@@ -54,6 +58,7 @@ namespace DialogueSystem.Windows
             OnGroupElementsAdded();
             OnGroupElementsRemoved();
             OnGroupRenamed();
+            OnGraphViewChanged();
             
             AddStyles();
         }
@@ -246,6 +251,39 @@ namespace DialogueSystem.Windows
             };
         }
 
+        private void OnGraphViewChanged()
+        {
+            graphViewChanged = (changes) =>
+            {
+                if (changes.edgesToCreate != null)
+                {
+                    foreach (Edge edge in changes.edgesToCreate)
+                    {
+                        DSNode nextNode = edge.input.node as DSNode;
+                        
+                        DSNodeSaveData choiceData = edge.output.userData as DSNodeSaveData;
+
+                        choiceData.NodeID = nextNode.ID;
+                    }
+                }
+
+                if (changes.elementsToRemove != null)
+                {
+                    foreach (GraphElement element in changes.elementsToRemove)
+                    {
+                        if (element is Edge edge)
+                        {
+                            DSChoiceSaveData choiceData = edge.output.userData as DSChoiceSaveData;
+                            
+                            choiceData.NodeID = "";
+                        }
+                    }
+                }
+
+                return changes;
+            };
+        }
+
         #endregion
         
         #region Repeated Elements
@@ -359,7 +397,7 @@ namespace DialogueSystem.Windows
             node.Group = group;
             
             if (!groupedNodes.ContainsKey(group)){
-                groupedNodes.Add(group, ScriptableObject.CreateInstance<DSNodeErrorScriptableDictionary>());
+                groupedNodes.Add(group, new SerializedDictionary<string, DSNodeErrorData>());
             }
 
             if (!groupedNodes[group].ContainsKey(nodeName))

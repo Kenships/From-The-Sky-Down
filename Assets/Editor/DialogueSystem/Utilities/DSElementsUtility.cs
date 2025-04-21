@@ -31,7 +31,6 @@ namespace DialogueSystem.Utilities
         {
             Port port = node.InstantiatePort(orientation, direction, capacity, typeof(bool));
             port.portName = portName;
-            
             return port;
         }
         public static TextField CreateTextField(string value = null, string label = null, EventCallback<ChangeEvent<string>> onValueChanged = null)

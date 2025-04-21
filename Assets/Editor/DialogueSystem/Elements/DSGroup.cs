@@ -1,3 +1,4 @@
+using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace DialogueSystem.Elements
 {
     public class DSGroup : Group
     {
+        public string ID { get; set; }
         public string OldTitle { get; set; }
         
         private Color defaultBorderColor;
@@ -12,6 +14,7 @@ namespace DialogueSystem.Elements
 
         public DSGroup(string groupTitle, Vector2 position)
         {
+            ID = Guid.NewGuid().ToString();
             title = groupTitle;
             OldTitle = groupTitle;
             

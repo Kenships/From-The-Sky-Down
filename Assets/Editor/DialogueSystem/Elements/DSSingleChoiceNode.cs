@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace DialogueSystem.Elements
 {
+    using Data.Save;
     using Windows;
     using Enumerations;
     public class DSSingleChoiceNode : DSNode
@@ -14,8 +15,13 @@ namespace DialogueSystem.Elements
             base.Initialize(position, dsGraphView);
             
             DialogueType = DSDialogueType.SingleChoice;
+
+            DSChoiceSaveData choiceData = new DSChoiceSaveData()
+            {
+                Text = "Next Dialogue"
+            };
             
-            Choices.Add("Next Dialogue");
+            Choices.Add(choiceData);
         }
 
         public override void Draw()
@@ -24,7 +30,9 @@ namespace DialogueSystem.Elements
 
             foreach (var choice in Choices)
             {
-                Port choicePort = this.CreatePort(choice);
+                Port choicePort = this.CreatePort(choice.Text);
+                
+                choicePort.userData = choice;
                 
                 outputContainer.Add(choicePort);
             }
