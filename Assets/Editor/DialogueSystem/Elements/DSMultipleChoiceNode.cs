@@ -47,7 +47,7 @@ namespace DialogueSystem.Elements
             
             mainContainer.Insert(1, addChoiceButton);
             
-            foreach (var choice in Choices)
+            foreach (DSChoiceSaveData choice in Choices)
             {
                 Port choicePort = CreateChoicePort(choice);
                 outputContainer.Add(choicePort);

@@ -8,6 +8,7 @@ namespace DialogueSystem.Windows
     using Utilities;
     public class DSEditorWindow : EditorWindow
     {
+        private DSGraphView graphView;
         private readonly string defaultFileName = "DialogueFile";
         private Button saveButton;
         private TextField fileNameTextField;
@@ -33,7 +34,7 @@ namespace DialogueSystem.Windows
                 fileNameTextField.value = callBack.newValue.RemoveWhiteSpaces().RemoveSpecialCharacters();
             });
 
-            saveButton = DSElementsUtility.CreateButton("Save");
+            saveButton = DSElementsUtility.CreateButton("Save", () => Save());
             
             toolbar.Add(fileNameTextField);
             toolbar.Add(saveButton);    
@@ -41,9 +42,10 @@ namespace DialogueSystem.Windows
             
             rootVisualElement.Add(toolbar);
         }
+        
         private void AddGraphView()
         {
-            DSGraphView graphView = new DSGraphView(this);
+            graphView = new DSGraphView(this);
         
             graphView.StretchToParentSize();
         
@@ -55,7 +57,23 @@ namespace DialogueSystem.Windows
             rootVisualElement.AddStyleSheets("DialogueSystem/DSVariables.uss");
         }
         #endregion
-
+        #region Toolbar Actions
+        private void Save()
+        {
+            if (string.IsNullOrEmpty(fileNameTextField.value))
+            {
+                EditorUtility.DisplayDialog(
+                    "Invalid File Name",
+                    "Please ensure the file name you've entered is valid.",
+                    "Exit"
+                );
+                return;
+            }
+            
+            DSIOUtility.Initialize(graphView, fileNameTextField.value);
+            DSIOUtility.Save();
+        }
+        #endregion
         #region Utility Methods
 
         public void EnableSaving()

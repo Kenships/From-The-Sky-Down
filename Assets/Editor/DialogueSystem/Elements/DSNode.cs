@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -68,6 +69,21 @@ namespace DialogueSystem.Elements
 
                 target.value = callback.newValue.RemoveWhiteSpaces().RemoveSpecialCharacters();
                 
+                if(string.IsNullOrEmpty(target.value))
+                {
+                    if (!string.IsNullOrEmpty(DialogueName))
+                    {
+                        ++graphView.NamesErrorCount;
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(DialogueName))
+                    {
+                        --graphView.NamesErrorCount;
+                    }
+                }
+                
                 if (Group == null)
                 {
                     graphView.RemoveUngroupedNode(this);
@@ -87,7 +103,7 @@ namespace DialogueSystem.Elements
                 
                 graphView.AddGroupedNode(this, currentGroup);
             });
-
+        
         dialogueNameTextField.AddClasses(
                 "ds-node__textfield",
                 "ds-node__textfield__hidden", 
@@ -105,8 +121,11 @@ namespace DialogueSystem.Elements
                 "ds-node__custom-data-container");
             
             Foldout textFoldout = DSElementsUtility.CreateFoldout("Dialogue Text");
-
-            TextField textField = DSElementsUtility.CreateTextArea(Text);
+            
+            TextField textField = DSElementsUtility.CreateTextArea(Text, null, callback =>
+            {
+                Text = callback.newValue;
+            });
             
             textField.AddClasses(
                 "ds-node__textfield", 
@@ -163,7 +182,13 @@ namespace DialogueSystem.Elements
             
             return false;
         }
-        
+
+        public bool IsStartNode()
+        {
+            Port inputport = inputContainer.Children().First() as Port;
+
+            return !inputport.connected;
+        }
 
         public void SetErrorStyle(Color color)
         {

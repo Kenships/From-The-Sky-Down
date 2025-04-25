@@ -28,7 +28,7 @@ namespace DialogueSystem.Elements
         {
             base.Draw();
 
-            foreach (var choice in Choices)
+            foreach (DSChoiceSaveData choice in Choices)
             {
                 Port choicePort = this.CreatePort(choice.Text);
                 

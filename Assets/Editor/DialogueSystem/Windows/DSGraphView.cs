@@ -24,19 +24,19 @@ namespace DialogueSystem.Windows
         private SerializedDictionary<string, DSNodeErrorData> ungroupedNodes;
         private SerializedDictionary<string, DSGroupErrorData> groups;
         private SerializedDictionary<Group, SerializedDictionary<string, DSNodeErrorData>> groupedNodes;
-        private int repeatedNamesAmount;
-        public int RepeatedNamesAmount
+        private int _namesErrorCount;
+        public int NamesErrorCount
         {
-            get => repeatedNamesAmount;
+            get => _namesErrorCount;
             set
             {
-                repeatedNamesAmount = value;
-                if (repeatedNamesAmount == 0)
+                _namesErrorCount = value;
+                if (_namesErrorCount == 0)
                 {
                     editorWindow.EnableSaving();
                 }
 
-                if (repeatedNamesAmount == 1)
+                if (_namesErrorCount == 1)
                 {
                     editorWindow.DisableSaving();
                 }
@@ -243,6 +243,21 @@ namespace DialogueSystem.Windows
 
                 dsGroup.title = newTitle.RemoveWhiteSpaces().RemoveSpecialCharacters();
                 
+                if(string.IsNullOrEmpty(dsGroup.title))
+                {
+                    if (!string.IsNullOrEmpty(dsGroup.OldTitle))
+                    {
+                        ++NamesErrorCount;
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(dsGroup.OldTitle))
+                    {
+                        --NamesErrorCount;
+                    }
+                }
+                
                 RemoveGroup(dsGroup);
                 
                 dsGroup.OldTitle = dsGroup.title;
@@ -312,7 +327,7 @@ namespace DialogueSystem.Windows
 
             if (ungroupedNodesList.Count == 2)
             {
-                ++RepeatedNamesAmount;
+                ++NamesErrorCount;
                 
                 ungroupedNodesList[0].SetErrorStyle(errorColor);
             }
@@ -331,7 +346,7 @@ namespace DialogueSystem.Windows
             switch (ungroupedNodesList.Count)
             {
                 case 1:
-                    --RepeatedNamesAmount;  
+                    --NamesErrorCount;  
                     ungroupedNodesList[0].ResetStyle();
                     return;
                 case 0:
@@ -364,7 +379,7 @@ namespace DialogueSystem.Windows
 
             if (groupsList.Count == 2)
             {
-                ++RepeatedNamesAmount;
+                ++NamesErrorCount;
                 groupsList[0].SetErrorStyle(errorColor);
             }
         }
@@ -382,7 +397,7 @@ namespace DialogueSystem.Windows
             switch (groupsList.Count)
             {
                 case 1:
-                    --RepeatedNamesAmount;
+                    --NamesErrorCount;
                     groupsList[0].ResetStyle();
                     return;
                 case 0:
@@ -421,7 +436,7 @@ namespace DialogueSystem.Windows
 
             if (groupNodesList.Count == 2)
             {
-                ++RepeatedNamesAmount;
+                ++NamesErrorCount;
                 groupNodesList[0].SetErrorStyle(errorColor);
             }
         }
@@ -440,7 +455,7 @@ namespace DialogueSystem.Windows
 
             if (groupNodesList.Count == 1)
             {
-                --RepeatedNamesAmount;
+                --NamesErrorCount;
                 groupNodesList[0].ResetStyle();
                 return;
             }
