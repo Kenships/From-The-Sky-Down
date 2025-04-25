@@ -276,7 +276,7 @@ namespace DialogueSystem.Windows
                     {
                         DSNode nextNode = edge.input.node as DSNode;
                         
-                        DSNodeSaveData choiceData = edge.output.userData as DSNodeSaveData;
+                        DSChoiceSaveData choiceData = edge.output.userData as DSChoiceSaveData;
 
                         choiceData.NodeID = nextNode.ID;
                     }
