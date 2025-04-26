@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AYellowpaper.SerializedCollections;
 using Codice.Client.BaseCommands.BranchExplorer;
@@ -20,6 +21,7 @@ namespace DialogueSystem.Utilities
         
         private static string graphFileName;
         private static string containerFolderPath;
+        private static string loadedGraphPath;
 
         private static List<DSGroup> groups;
         private static List<DSNode> nodes;
@@ -29,6 +31,7 @@ namespace DialogueSystem.Utilities
         
         private static Dictionary<string, DSGroup> loadedGroups;
         private static Dictionary<string, DSNode> loadedNodes;
+        
         public static void Initialize(DSGraphView dsGraphView, string graphName)
         {
             graphView = dsGraphView;
@@ -49,6 +52,7 @@ namespace DialogueSystem.Utilities
 
         public static void Load(string path)
         {
+            loadedGraphPath = path;
             DSGraphSaveDataSO graphData = LoadAsset<DSGraphSaveDataSO>(path, graphFileName);
 
             if (graphData == null)
@@ -151,7 +155,9 @@ namespace DialogueSystem.Utilities
 
             GetElementsFromGraphView();
 
-            DSGraphSaveDataSO graphData = CreateAsset<DSGraphSaveDataSO>("Assets/Editor/DialogueSystem/Graphs", $"{graphFileName}Graph");
+            DSGraphSaveDataSO graphData = CreateGraphAsset<DSGraphSaveDataSO>("Assets/Editor/DialogueSystem/Graphs", $"{graphFileName}Graph");
+
+            if (!graphData) return;
             
             graphData.Initialize(graphFileName);
 
@@ -437,6 +443,43 @@ namespace DialogueSystem.Utilities
                 AssetDatabase.CreateAsset(asset, fullPath);
             }
             return asset;
+        }
+        
+        private static T CreateGraphAsset<T>(string path, string assetName) where T : ScriptableObject
+        {
+            #if UNITY_EDITOR
+            // 1) Search for any asset with exactly our filename under folderPath...
+            string[] guids = AssetDatabase.FindAssets($"{assetName} t:{typeof(T).Name}", new[] { path });
+            foreach (var guid in guids)
+            {
+                string fullPath = AssetDatabase.GUIDToAssetPath(guid);
+                if (string.Equals(Path.GetFileName(fullPath), assetName + ".asset", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    // Found it—just load & return
+                    return AssetDatabase.LoadAssetAtPath<T>(fullPath);
+                }
+            }
+
+            // 2) Not found → prompt user for where to save
+            string chosenPath = EditorUtility.SaveFilePanelInProject(
+                title:            $"Save new {typeof(T).Name}",
+                defaultName:      assetName,
+                extension:        "asset",
+                message:          "Choose a folder and filename to save your new asset.",
+                path:             path
+            );
+
+            if (string.IsNullOrEmpty(chosenPath))
+                return null;  // user cancelled
+
+            // 3) Create, save and return the new asset
+            var asset = ScriptableObject.CreateInstance<T>();
+            AssetDatabase.CreateAsset(asset, chosenPath);
+            return asset;
+            #else
+        Debug.LogError("CreateAsset<T> can only prompt for save location in the Unity Editor.");
+        return null;
+            #endif
         }
         
         private static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject

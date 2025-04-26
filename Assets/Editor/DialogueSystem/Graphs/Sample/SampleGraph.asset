@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b452f9ba3198c9c48a0347fca87eabe9, type: 3}
   m_Name: SampleGraph
   m_EditorClassIdentifier: 
-  <FileName>k__BackingField: DialogueFile
+  <FileName>k__BackingField: Sample
   <Groups>k__BackingField:
   - <ID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <Name>k__BackingField: Eating
     <Position>k__BackingField: {x: 467, y: -36}
   - <ID>k__BackingField: 68bfaad6-6f5e-4467-9d9e-f4dadf1bc816
     <Name>k__BackingField: Volunteering
-    <Position>k__BackingField: {x: 897.00006, y: 1053.0001}
+    <Position>k__BackingField: {x: 897, y: 1053}
   <Nodes>k__BackingField:
   - <NodeID>k__BackingField: 77352fd5-6430-44a1-a14e-f40030befcdd
     <Name>k__BackingField: Unhealthy
