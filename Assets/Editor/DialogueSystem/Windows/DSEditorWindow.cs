@@ -94,7 +94,7 @@ namespace DialogueSystem.Windows
             Clear();
             
             DSIOUtility.Initialize(graphView, Path.GetFileNameWithoutExtension(filePath));
-            DSIOUtility.Load();
+            DSIOUtility.Load(Path.GetDirectoryName(filePath).TrimFilePathToAssetPath());
         }
         private void Clear()
         {

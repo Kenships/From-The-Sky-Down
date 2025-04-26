@@ -35,6 +35,25 @@ namespace DialogueSystem.Utilities
             }
             return sb.ToString();
         }
+        /// <summary>
+        /// Trims off everything before and including the disk-root, returning an "Assets/…" path.
+        /// E.g. "C:\Projects\MyGame\Assets\Foo\bar.asset" → "Assets/Foo/bar.asset"
+        /// </summary>
+        public static string TrimFilePathToAssetPath(this string fullPath)
+        {
+            if (string.IsNullOrEmpty(fullPath))
+                throw new ArgumentException("Path cannot be null or empty.", nameof(fullPath));
+
+            // Find the "Assets" folder marker
+            int idx = fullPath.IndexOf("Assets", StringComparison.OrdinalIgnoreCase);
+            if (idx < 0)
+                throw new ArgumentException($"The path does not contain an 'Assets' segment: {fullPath}");
+
+            // Grab from "Assets" onward, replace backslashes with slashes
+            string relative = fullPath.Substring(idx);
+            return relative.Replace(Path.DirectorySeparatorChar, '/')
+                .Replace(Path.AltDirectorySeparatorChar, '/');
+        }
     }
     
 }

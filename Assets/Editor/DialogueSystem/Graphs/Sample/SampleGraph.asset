@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b452f9ba3198c9c48a0347fca87eabe9, type: 3}
-  m_Name: DialogueFileGraph
+  m_Name: SampleGraph
   m_EditorClassIdentifier: 
   <FileName>k__BackingField: DialogueFile
   <Groups>k__BackingField:

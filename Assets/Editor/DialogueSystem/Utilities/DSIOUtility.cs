@@ -47,9 +47,9 @@ namespace DialogueSystem.Utilities
 
         #region Load Methods
 
-        public static void Load()
+        public static void Load(string path)
         {
-            DSGraphSaveDataSO graphData = LoadAsset<DSGraphSaveDataSO>("Assets/Editor/DialogueSystem/Graphs", graphFileName);
+            DSGraphSaveDataSO graphData = LoadAsset<DSGraphSaveDataSO>(path, graphFileName);
 
             if (graphData == null)
             {
@@ -291,9 +291,6 @@ namespace DialogueSystem.Utilities
             graphData.Nodes.Add(nodeData);
         }
 
-        
-        
-
         private static void SaveNodeToScriptableObject(DSNode node, DSDialogueContainerSO dialogueContainer)
         {
             DSDialogueSO dialogue;
@@ -437,13 +434,11 @@ namespace DialogueSystem.Utilities
             if (!asset)
             {
                 asset = ScriptableObject.CreateInstance<T>();
+                AssetDatabase.CreateAsset(asset, fullPath);
             }
-            
-            AssetDatabase.CreateAsset(asset, fullPath);
-
             return asset;
         }
-
+        
         private static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             string fullPath = $"{path}/{assetName}.asset";
