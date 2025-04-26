@@ -1,3 +1,4 @@
+using System.IO;
 using DialogueSystem.Utilities;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -11,7 +12,7 @@ namespace DialogueSystem.Windows
         private DSGraphView graphView;
         private readonly string defaultFileName = "DialogueFile";
         private Button saveButton;
-        private TextField fileNameTextField;
+        private static TextField fileNameTextField;
         [MenuItem("Window/DS/Dialogue Graph")] 
         public static void Open()
         {
@@ -34,15 +35,23 @@ namespace DialogueSystem.Windows
                 fileNameTextField.value = callBack.newValue.RemoveWhiteSpaces().RemoveSpecialCharacters();
             });
 
-            saveButton = DSElementsUtility.CreateButton("Save", () => Save());
+            saveButton = DSElementsUtility.CreateButton("Save", Save);
+
+            Button loadButton = DSElementsUtility.CreateButton("Load", Load);
+            Button clearButton = DSElementsUtility.CreateButton("Clear", Clear);
+            Button resetButton = DSElementsUtility.CreateButton("Reset", ResetGraph);
             
             toolbar.Add(fileNameTextField);
-            toolbar.Add(saveButton);    
+            toolbar.Add(saveButton);  
+            toolbar.Add(loadButton);
+            toolbar.Add(clearButton);
+            toolbar.Add(resetButton);
             toolbar.AddStyleSheets("DialogueSystem/DSToolbarStyles.uss");
             
             rootVisualElement.Add(toolbar);
         }
-        
+
+
         private void AddGraphView()
         {
             graphView = new DSGraphView(this);
@@ -73,8 +82,39 @@ namespace DialogueSystem.Windows
             DSIOUtility.Initialize(graphView, fileNameTextField.value);
             DSIOUtility.Save();
         }
+        private void Load()
+        {
+            string filePath = EditorUtility.OpenFilePanel("Dialogue Graphs", "Assets/Editor/DialogueSystem/Graphs", "asset");
+
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return;
+            }
+            
+            Clear();
+            
+            DSIOUtility.Initialize(graphView, Path.GetFileNameWithoutExtension(filePath));
+            DSIOUtility.Load();
+        }
+        private void Clear()
+        {
+            graphView.ClearGraph();
+        }
+        
+        private void ResetGraph()
+        {
+            Clear();
+            UpdateFileName(defaultFileName);
+        }
+        
+        
         #endregion
         #region Utility Methods
+
+        public static void UpdateFileName(string newFileName)
+        {
+            fileNameTextField.value = newFileName;
+        }
 
         public void EnableSaving()
         {

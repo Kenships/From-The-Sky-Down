@@ -11,9 +11,9 @@ namespace DialogueSystem.Elements
     using Enumerations;
     public class DSMultipleChoiceNode : DSNode
     {
-        public override void Initialize(Vector2 position , DSGraphView dsGraphView)
+        public override void Initialize(string nodeName, Vector2 position , DSGraphView dsGraphView)
         {
-            base.Initialize(position, dsGraphView);
+            base.Initialize(nodeName, position, dsGraphView);
             
             DialogueType = DSDialogueType.MultipleChoice;
             

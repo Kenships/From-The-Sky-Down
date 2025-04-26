@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec6e7a9e2934e3b97ca448122c8535f, type: 3}
+  m_Name: Unhealthy
+  m_EditorClassIdentifier: 
+  <DialogueName>k__BackingField: Unhealthy
+  <Text>k__BackingField: 'Wow thats really unhealthy!
+
+
+    Is this really what you
+    want to eat?'
+  <Choices>k__BackingField:
+  - <Text>k__BackingField: YES!
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: a0ad9100901f9e544baed1e9730f8a9c, type: 2}
+  - <Text>k__BackingField: Now that you mention it no...
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 82ab63008fae34145a784840d5c1351b, type: 2}
+  <DialogueType>k__BackingField: 1
+  <IsStartingDialogue>k__BackingField: 0

@@ -5,6 +5,7 @@ using Codice.Client.BaseCommands.BranchExplorer;
 using DialogueSystem.Data;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace DialogueSystem.Utilities
@@ -26,6 +27,8 @@ namespace DialogueSystem.Utilities
         private static Dictionary<string, DSDialogueGroupSO> createdDialogueGroups;
         private static Dictionary<string, DSDialogueSO> createdDialogues;
         
+        private static Dictionary<string, DSGroup> loadedGroups;
+        private static Dictionary<string, DSNode> loadedNodes;
         public static void Initialize(DSGraphView dsGraphView, string graphName)
         {
             graphView = dsGraphView;
@@ -37,11 +40,111 @@ namespace DialogueSystem.Utilities
             
             createdDialogueGroups = new Dictionary<string, DSDialogueGroupSO>();
             createdDialogues = new Dictionary<string, DSDialogueSO>();
+            
+            loadedGroups = new Dictionary<string, DSGroup>();
+            loadedNodes = new Dictionary<string, DSNode>();
+        }
+
+        #region Load Methods
+
+        public static void Load()
+        {
+            DSGraphSaveDataSO graphData = LoadAsset<DSGraphSaveDataSO>("Assets/Editor/DialogueSystem/Graphs", graphFileName);
+
+            if (graphData == null)
+            {
+                EditorUtility.DisplayDialog("Couldn't load the file!",
+                    "The file at the following path could not be found:\n\n" + 
+                    $"Assets/Editor/DialogueSystem/Graphs/{graphFileName}\n\n + " +
+                    "Make sure you chose the correct file and it's placed in the folder path above.",
+                    "Exit"
+                    );
+                return;
+            }
+            
+            DSEditorWindow.UpdateFileName(graphData.FileName);
+
+            LoadGroups(graphData.Groups);
+            LoadNodes(graphData.Nodes);
+            LoadNodeConnections();
+        }
+
+        
+
+        private static void LoadGroups(List<DSGroupSaveData> groups)
+        {
+            foreach (DSGroupSaveData groupData in groups)
+            {
+                DSGroup group = graphView.CreateGroup(groupData.Name, groupData.Position);
+                
+                group.ID = groupData.ID;
+                
+                loadedGroups.Add(group.ID, group);
+            }
+            
+        }
+
+        private static void LoadNodes(List<DSNodeSaveData> nodes)
+        {
+            foreach (DSNodeSaveData nodeData in nodes)
+            {
+                List<DSChoiceSaveData> choices = CloneNodeChoices(nodeData.Choices);
+                
+                DSNode node = graphView.CreateNode(nodeData.Name, nodeData.DialogueType, nodeData.Position, false);
+
+                node.ID = nodeData.NodeID;
+                node.Choices = choices;
+                node.Text = nodeData.Text;
+                
+                node.Draw();
+                
+                graphView.AddElement(node);
+                
+                loadedNodes.Add(node.ID, node);
+
+                if (string.IsNullOrEmpty(nodeData.GroupID))
+                {
+                    continue;
+                }
+                
+                DSGroup group = loadedGroups[nodeData.GroupID];
+                
+                node.Group = group;
+                
+                group.AddElement(node);
+                
+            }
         }
         
+        private static void LoadNodeConnections()
+        {
+            foreach (KeyValuePair<string, DSNode> loadedNode in loadedNodes)
+            {
+                foreach (Port choicePort in loadedNode.Value.outputContainer.Children())
+                {
+                    DSChoiceSaveData choiceData = choicePort.userData as DSChoiceSaveData;
+
+                    if (string.IsNullOrEmpty(choiceData.NodeID))
+                    {
+                        continue;
+                    }
+                    
+                    DSNode nextNode = loadedNodes[choiceData.NodeID];
+                    
+                    Port nextNodeInputPort = nextNode.inputContainer.Children().First() as Port;
+                    
+                    Edge edge = choicePort.ConnectTo(nextNodeInputPort);
+
+                    graphView.AddElement(edge);
+
+                    loadedNode.Value.RefreshPorts();
+                }
+            }
+        }
+
+        #endregion
         
         #region Save Methods
-        
         public static void Save()
         {
             CreateStaticFolder();
@@ -154,7 +257,7 @@ namespace DialogueSystem.Utilities
 
         private static void UpdateDialogueChoiceConnections()
         {
-            /*foreach (DSNode node in nodes)
+            foreach (DSNode node in nodes)
             {
                 DSDialogueSO dialogue = createdDialogues[node.ID];
                 
@@ -168,22 +271,12 @@ namespace DialogueSystem.Utilities
                         SaveAsset(dialogue);
                     }
                 }
-            }*/
+            }
         }
 
         private static void SaveNodeToGraph(DSNode node, DSGraphSaveDataSO graphData)
         {
-            List<DSChoiceSaveData> choices = new List<DSChoiceSaveData>();
-            foreach (DSChoiceSaveData choice in node.Choices)
-            {
-                DSChoiceSaveData choiceData = new DSChoiceSaveData()
-                {
-                    Text = choice.Text,
-                    NodeID = choice.NodeID
-                };
-                
-                choices.Add(choiceData);
-            }
+            List<DSChoiceSaveData> choices = CloneNodeChoices(node.Choices);
             DSNodeSaveData nodeData = new DSNodeSaveData()
             {
                 NodeID = node.ID,
@@ -197,6 +290,9 @@ namespace DialogueSystem.Utilities
             
             graphData.Nodes.Add(nodeData);
         }
+
+        
+        
 
         private static void SaveNodeToScriptableObject(DSNode node, DSDialogueContainerSO dialogueContainer)
         {
@@ -336,7 +432,7 @@ namespace DialogueSystem.Utilities
         {
             string fullPath = $"{path}/{assetName}.asset";
 
-            T asset = AssetDatabase.LoadAssetAtPath<T>(fullPath);
+            T asset = LoadAsset<T>(path, assetName);
 
             if (!asset)
             {
@@ -346,6 +442,13 @@ namespace DialogueSystem.Utilities
             AssetDatabase.CreateAsset(asset, fullPath);
 
             return asset;
+        }
+
+        private static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject
+        {
+            string fullPath = $"{path}/{assetName}.asset";
+            
+            return AssetDatabase.LoadAssetAtPath<T>(fullPath);
         }
 
         private static void RemoveAsset(string path, string assetName)
@@ -360,7 +463,24 @@ namespace DialogueSystem.Utilities
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
-
+        
+        private static List<DSChoiceSaveData> CloneNodeChoices(List<DSChoiceSaveData> nodeChoices)
+        {
+            List<DSChoiceSaveData> choices = new List<DSChoiceSaveData>();
+            
+            foreach (DSChoiceSaveData choice in nodeChoices)
+            {
+                DSChoiceSaveData choiceData = new DSChoiceSaveData()
+                {
+                    Text = choice.Text,
+                    NodeID = choice.NodeID
+                };
+                
+                choices.Add(choiceData);
+            }
+            
+            return choices;
+        }
         #endregion
     }
 }

@@ -102,21 +102,27 @@ namespace DialogueSystem.Windows
         private IManipulator CreateNodeContextualMenu(string actionTitle, DSDialogueType dialogueType)
         {
             ContextualMenuManipulator contextualMenuManipulator = new ContextualMenuManipulator(
-                menuEvent => menuEvent.menu.AppendAction(actionTitle, actionEvent => AddElement(CreateNode(dialogueType, GetLocalMousePosition(actionEvent.eventInfo.localMousePosition)))));
+                menuEvent => menuEvent.menu.AppendAction(actionTitle, actionEvent => AddElement(CreateNode("DialogueName", dialogueType, GetLocalMousePosition(actionEvent.eventInfo.localMousePosition)))));
 
             return contextualMenuManipulator;
         }
         #endregion
         
         #region Elements Creation
-        public DSNode CreateNode(DSDialogueType dialogueType, Vector2 position)
+        public DSNode CreateNode(string nodeName, DSDialogueType dialogueType, Vector2 position, bool shouldDraw = true)
         {
             Type nodeType = Type.GetType($"DialogueSystem.Elements.DS{dialogueType}Node");
             DSNode node = Activator.CreateInstance(nodeType) as DSNode;
             
-            node.Initialize(position, this);
-            node.Draw();
+            node.Initialize(nodeName, position, this);
 
+            if (shouldDraw)
+            {
+                node.Draw();
+
+            }
+            
+            
             AddUngroupedNode(node);
             
             return node;
@@ -517,6 +523,17 @@ namespace DialogueSystem.Windows
             
             Vector2 localMousePosition = contentViewContainer.WorldToLocal(worldMousePosition);
             return localMousePosition;
+        }
+
+        public void ClearGraph()
+        {
+            graphElements.ForEach(RemoveElement);
+
+            groups.Clear();
+            groupedNodes.Clear();
+            ungroupedNodes.Clear();
+            
+            NamesErrorCount = 0;
         }
         #endregion
     }
