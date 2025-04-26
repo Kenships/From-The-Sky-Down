@@ -43,3 +43,8 @@ TextField:focus > .unity-text-field__label {
 .unity-text-field__input:focus{
     color: var(--ds-colors-window-yellow);
 }
+
+.ds-toolbar__button__selected
+{
+    color: var(--ds-colors-window-yellow);
+}
