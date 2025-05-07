@@ -21,6 +21,7 @@
     max-width: var(--ds-metrics-window-pixels-240);
     min-width: var(--ds-metrics-window-pixels-160);
     padding: var(--ds-metrics-window-pixels-8);
+    margin-right: var(--ds-metrics-window-pixels-4);
 }
 
 .ds-node__textfield__hidden > .unity-text-field__input{
@@ -88,6 +89,7 @@
 
 TextField{
     margin-left: var(--ds-metrics-window-pixels-0);
+    margin-right: var(--ds-metrics-window-pixels-0);
 }
 
 .ds-node__custom-data-container > Foldout{

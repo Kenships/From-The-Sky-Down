@@ -98,7 +98,10 @@ namespace DialogueSystem.Utilities
 
                 node.ID = nodeData.NodeID;
                 node.Choices = choices;
+                node.SpeakerName = nodeData.SpeakerName;
+                node.ListenerName = nodeData.ListenerName;
                 node.Text = nodeData.Text;
+                
                 
                 node.Draw();
                 
@@ -287,6 +290,8 @@ namespace DialogueSystem.Utilities
             {
                 NodeID = node.ID,
                 Name = node.DialogueName,
+                SpeakerName = node.SpeakerName,
+                ListenerName = node.ListenerName,
                 Choices = choices,
                 Text = node.Text,
                 GroupID = node.Group?.ID,
@@ -330,6 +335,7 @@ namespace DialogueSystem.Utilities
                 DSDialogueChoiceData choiceData = new DSDialogueChoiceData()
                 {
                     Text = nodeChoice.Text,
+                    Weighting = nodeChoice.Weighting
                 };
                 
                 dialogueChoices.Add(choiceData);
@@ -417,7 +423,7 @@ namespace DialogueSystem.Utilities
         #endregion
         
         #region Utility Methods
-        private static void CreateFolder(string path, string folderName)
+        public static void CreateFolder(string path, string folderName)
         {
             if(AssetDatabase.IsValidFolder($"{path}/{folderName}"))
             {
@@ -426,12 +432,12 @@ namespace DialogueSystem.Utilities
 
             AssetDatabase.CreateFolder(path, folderName);
         }
-        private static void RemoveFolder(string fullPath)
+        public static void RemoveFolder(string fullPath)
         {
             FileUtil.DeleteFileOrDirectory($"{fullPath}.meta");
             FileUtil.DeleteFileOrDirectory($"{fullPath}/");
         }
-        private static T CreateAsset<T>(string path, string assetName) where T : ScriptableObject
+        public static T CreateAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             string fullPath = $"{path}/{assetName}.asset";
 
@@ -445,7 +451,7 @@ namespace DialogueSystem.Utilities
             return asset;
         }
         
-        private static T CreateGraphAsset<T>(string path, string assetName) where T : ScriptableObject
+        public static T CreateGraphAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             #if UNITY_EDITOR
             // 1) Search for any asset with exactly our filename under folderPath...
@@ -482,19 +488,19 @@ namespace DialogueSystem.Utilities
             #endif
         }
         
-        private static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject
+        public static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             string fullPath = $"{path}/{assetName}.asset";
             
             return AssetDatabase.LoadAssetAtPath<T>(fullPath);
         }
 
-        private static void RemoveAsset(string path, string assetName)
+        public static void RemoveAsset(string path, string assetName)
         {
             AssetDatabase.DeleteAsset($"{path}/{assetName}.asset");
         }
 
-        private static void SaveAsset(Object asset)
+        public static void SaveAsset(Object asset)
         {
             EditorUtility.SetDirty(asset);
             
@@ -511,6 +517,7 @@ namespace DialogueSystem.Utilities
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
                     Text = choice.Text,
+                    Weighting = choice.Weighting,
                     NodeID = choice.NodeID
                 };
                 

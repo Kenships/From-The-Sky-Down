@@ -16,13 +16,15 @@ MonoBehaviour:
   <Groups>k__BackingField:
   - <ID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <Name>k__BackingField: Eating
-    <Position>k__BackingField: {x: 467, y: -36}
+    <Position>k__BackingField: {x: 466.66666, y: -35.333336}
   - <ID>k__BackingField: 68bfaad6-6f5e-4467-9d9e-f4dadf1bc816
     <Name>k__BackingField: Volunteering
-    <Position>k__BackingField: {x: 897, y: 1053}
+    <Position>k__BackingField: {x: 896.6667, y: 1053.3334}
   <Nodes>k__BackingField:
   - <NodeID>k__BackingField: 77352fd5-6430-44a1-a14e-f40030befcdd
     <Name>k__BackingField: Unhealthy
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: 'Wow thats really unhealthy!
 
 
@@ -30,121 +32,198 @@ MonoBehaviour:
       you want to eat?'
     <Choices>k__BackingField:
     - <Text>k__BackingField: YES!
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 14c16ab2-dba8-46bd-9df8-6a4afb93acb4
     - <Text>k__BackingField: Now that you mention it no...
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: fba083fb-01e2-4da0-af75-dcfc84040446
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 1
-    <Position>k__BackingField: {x: 922, y: 23}
+    <Position>k__BackingField: {x: 922, y: 23.333332}
   - <NodeID>k__BackingField: 83721752-f58c-4864-baf3-e44e0ffd2d38
     <Name>k__BackingField: Healthy
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: 'Wow thats really Healthy!
 
 
       Great choice'
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 14c16ab2-dba8-46bd-9df8-6a4afb93acb4
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 987, y: 404}
+    <Position>k__BackingField: {x: 987.3333, y: 404}
   - <NodeID>k__BackingField: 14c16ab2-dba8-46bd-9df8-6a4afb93acb4
     <Name>k__BackingField: Eat
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: Yum yum yummy!
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 2c1765a9-be08-4c5f-8717-a7eb1e322c15
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 1442, y: 257}
+    <Position>k__BackingField: {x: 1442, y: 257.33334}
   - <NodeID>k__BackingField: fba083fb-01e2-4da0-af75-dcfc84040446
     <Name>k__BackingField: FoodChoice
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: What do you guys want to eat Today?
     <Choices>k__BackingField:
     - <Text>k__BackingField: Pizza
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 77352fd5-6430-44a1-a14e-f40030befcdd
     - <Text>k__BackingField: Rice
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 83721752-f58c-4864-baf3-e44e0ffd2d38
     - <Text>k__BackingField: Fruits
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 83721752-f58c-4864-baf3-e44e0ffd2d38
     - <Text>k__BackingField: Mcdonalds
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 77352fd5-6430-44a1-a14e-f40030befcdd
     - <Text>k__BackingField: nothing
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: a8128735-b35c-4d1e-b10b-d2414785ea5c
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 1
     <Position>k__BackingField: {x: 492, y: 214}
-  - <NodeID>k__BackingField: 2b6b9188-b2eb-4238-bb37-1962c500e7bf
-    <Name>k__BackingField: StartNode
-    <Text>k__BackingField: What do you want to do today?
-    <Choices>k__BackingField:
-    - <Text>k__BackingField: Eat!
-      <NodeID>k__BackingField: fba083fb-01e2-4da0-af75-dcfc84040446
-    - <Text>k__BackingField: Labour away for Kenneth so that he can make $$$
-      <NodeID>k__BackingField: 2bcc7cf6-de0b-4876-b820-9f910c1c2e8e
-    <GroupID>k__BackingField: 
-    <DialogueType>k__BackingField: 1
-    <Position>k__BackingField: {x: -121, y: 620}
   - <NodeID>k__BackingField: 2c1765a9-be08-4c5f-8717-a7eb1e322c15
     <Name>k__BackingField: Transition
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: Well break time is over now
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 2bcc7cf6-de0b-4876-b820-9f910c1c2e8e
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 0
     <Position>k__BackingField: {x: 1816, y: 270}
   - <NodeID>k__BackingField: 2bcc7cf6-de0b-4876-b820-9f910c1c2e8e
     <Name>k__BackingField: WorkingTIme
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: Do you want to work today?
     <Choices>k__BackingField:
     - <Text>k__BackingField: YES!
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     - <Text>k__BackingField: of course :D
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     - <Text>k__BackingField: Why would I ever not want to
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     - <Text>k__BackingField: I Don't want to
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     <GroupID>k__BackingField: 68bfaad6-6f5e-4467-9d9e-f4dadf1bc816
     <DialogueType>k__BackingField: 1
     <Position>k__BackingField: {x: 922, y: 1112}
   - <NodeID>k__BackingField: 8e5734db-de69-49d0-98ab-d1ef228daced
     <Name>k__BackingField: ByeBye
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: "Good night I will go sleep now. \nDON'T STOP WORKING
       UNDER ANY CONDITIONS!\nIN CASE OF FIRE MAKE SURE TO COMMIT, PUSH THEN LEAVE
       THE BUILDING!"
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 
     <GroupID>k__BackingField: 68bfaad6-6f5e-4467-9d9e-f4dadf1bc816
     <DialogueType>k__BackingField: 0
     <Position>k__BackingField: {x: 1964, y: 1208}
   - <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     <Name>k__BackingField: Work
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: Your shift starts now your shift is 24/7 52 weeks per
       year
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 8e5734db-de69-49d0-98ab-d1ef228daced
     <GroupID>k__BackingField: 68bfaad6-6f5e-4467-9d9e-f4dadf1bc816
     <DialogueType>k__BackingField: 0
     <Position>k__BackingField: {x: 1484, y: 1208}
   - <NodeID>k__BackingField: a8128735-b35c-4d1e-b10b-d2414785ea5c
     <Name>k__BackingField: Hungry
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
     <Text>k__BackingField: 'Nothing Seriously?
 
       Okay fine stay hungry then
       >:l'
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 2c1765a9-be08-4c5f-8717-a7eb1e322c15
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 987, y: 648}
+    <Position>k__BackingField: {x: 987.3333, y: 648}
+  - <NodeID>k__BackingField: 2b6b9188-b2eb-4238-bb37-1962c500e7bf
+    <Name>k__BackingField: StartNode
+    <SpeakerName>k__BackingField: Solus
+    <ListenerName>k__BackingField: Kenneth
+    <Text>k__BackingField: What do you want to do today?
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: Eat!
+      <Weighting>k__BackingField: 1
+      <NodeID>k__BackingField: fba083fb-01e2-4da0-af75-dcfc84040446
+    - <Text>k__BackingField: Labour away for Kenneth so that he can make $$$
+      <Weighting>k__BackingField: 3
+      <NodeID>k__BackingField: 2bcc7cf6-de0b-4876-b820-9f910c1c2e8e
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: -120.666664, y: 620}
+  - <NodeID>k__BackingField: 8e118341-53f1-4d72-b849-7081d0c3d21a
+    <Name>k__BackingField: ColorTest
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
+    <Text>k__BackingField: Dialogue Text.
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 0
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 1
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 2
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 3
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 4
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 5
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 6
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 7
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 8
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: New Choice
+      <Weighting>k__BackingField: 9
+      <NodeID>k__BackingField: 
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: -18, y: 1086}
   <OldGroupNames>k__BackingField:
-  - StartNode
   - Transition
+  - StartNode
+  - ColorTest
   <OldUngroupedNames>k__BackingField: []
   <OldGroupedNodeNames>k__BackingField:
     _serializedList:

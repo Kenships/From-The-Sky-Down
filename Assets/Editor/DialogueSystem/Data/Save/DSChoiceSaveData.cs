@@ -7,6 +7,7 @@ namespace DialogueSystem.Data.Save
     public class DSChoiceSaveData
     {
         [field: SerializeField] public string Text { get; set; }
+        [field: SerializeField] public int Weighting { get; set; }
         [field: SerializeField] public string NodeID { get; set; }
     }
 }

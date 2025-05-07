@@ -16,12 +16,16 @@ MonoBehaviour:
   <Text>k__BackingField: Do you want to work today?
   <Choices>k__BackingField:
   - <Text>k__BackingField: YES!
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 0d00d25076c90a345aa7b664e70dc03d, type: 2}
   - <Text>k__BackingField: of course :D
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 0d00d25076c90a345aa7b664e70dc03d, type: 2}
   - <Text>k__BackingField: Why would I ever not want to
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 0d00d25076c90a345aa7b664e70dc03d, type: 2}
   - <Text>k__BackingField: I Don't want to
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 0d00d25076c90a345aa7b664e70dc03d, type: 2}
   <DialogueType>k__BackingField: 1
   <IsStartingDialogue>k__BackingField: 0
