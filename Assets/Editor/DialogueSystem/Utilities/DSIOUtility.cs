@@ -417,7 +417,7 @@ namespace DialogueSystem.Utilities
         #endregion
         
         #region Utility Methods
-        private static void CreateFolder(string path, string folderName)
+        public static void CreateFolder(string path, string folderName)
         {
             if(AssetDatabase.IsValidFolder($"{path}/{folderName}"))
             {
@@ -426,12 +426,12 @@ namespace DialogueSystem.Utilities
 
             AssetDatabase.CreateFolder(path, folderName);
         }
-        private static void RemoveFolder(string fullPath)
+        public static void RemoveFolder(string fullPath)
         {
             FileUtil.DeleteFileOrDirectory($"{fullPath}.meta");
             FileUtil.DeleteFileOrDirectory($"{fullPath}/");
         }
-        private static T CreateAsset<T>(string path, string assetName) where T : ScriptableObject
+        public static T CreateAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             string fullPath = $"{path}/{assetName}.asset";
 
@@ -445,7 +445,7 @@ namespace DialogueSystem.Utilities
             return asset;
         }
         
-        private static T CreateGraphAsset<T>(string path, string assetName) where T : ScriptableObject
+        public static T CreateGraphAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             #if UNITY_EDITOR
             // 1) Search for any asset with exactly our filename under folderPath...
@@ -482,19 +482,19 @@ namespace DialogueSystem.Utilities
             #endif
         }
         
-        private static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject
+        public static T LoadAsset<T>(string path, string assetName) where T : ScriptableObject
         {
             string fullPath = $"{path}/{assetName}.asset";
             
             return AssetDatabase.LoadAssetAtPath<T>(fullPath);
         }
 
-        private static void RemoveAsset(string path, string assetName)
+        public static void RemoveAsset(string path, string assetName)
         {
             AssetDatabase.DeleteAsset($"{path}/{assetName}.asset");
         }
 
-        private static void SaveAsset(Object asset)
+        public static void SaveAsset(Object asset)
         {
             EditorUtility.SetDirty(asset);
             
