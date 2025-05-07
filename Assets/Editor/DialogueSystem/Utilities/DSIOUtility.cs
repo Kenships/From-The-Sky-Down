@@ -98,7 +98,10 @@ namespace DialogueSystem.Utilities
 
                 node.ID = nodeData.NodeID;
                 node.Choices = choices;
+                node.SpeakerName = nodeData.SpeakerName;
+                node.ListenerName = nodeData.ListenerName;
                 node.Text = nodeData.Text;
+                
                 
                 node.Draw();
                 
@@ -287,6 +290,8 @@ namespace DialogueSystem.Utilities
             {
                 NodeID = node.ID,
                 Name = node.DialogueName,
+                SpeakerName = node.SpeakerName,
+                ListenerName = node.ListenerName,
                 Choices = choices,
                 Text = node.Text,
                 GroupID = node.Group?.ID,
@@ -330,6 +335,7 @@ namespace DialogueSystem.Utilities
                 DSDialogueChoiceData choiceData = new DSDialogueChoiceData()
                 {
                     Text = nodeChoice.Text,
+                    Weighting = nodeChoice.Weighting
                 };
                 
                 dialogueChoices.Add(choiceData);
@@ -511,6 +517,7 @@ namespace DialogueSystem.Utilities
                 DSChoiceSaveData choiceData = new DSChoiceSaveData()
                 {
                     Text = choice.Text,
+                    Weighting = choice.Weighting,
                     NodeID = choice.NodeID
                 };
                 

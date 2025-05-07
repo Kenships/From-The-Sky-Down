@@ -125,7 +125,6 @@ namespace DialogueSystem.Windows
             if (shouldDraw)
             {
                 node.Draw();
-
             }
             
             

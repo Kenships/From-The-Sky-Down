@@ -15,6 +15,8 @@ namespace DialogueSystem.Elements
     {
         public string ID { get; set; }
         public string DialogueName { get; set; }
+        public string SpeakerName { get; set; }
+        public string ListenerName { get; set; }
         public List<DSChoiceSaveData> Choices { get; set; }
         public string Text { get; set; }
         public DSDialogueType DialogueType { get; set; }
@@ -103,13 +105,25 @@ namespace DialogueSystem.Elements
                 
                 graphView.AddGroupedNode(this, currentGroup);
             });
+
+            TextField speakerNameTextField = DSElementsUtility.CreateTextField(SpeakerName, "Speaker: ", callback =>
+            {
+                SpeakerName = callback.newValue;
+            });
+            TextField listenerNameTextField = DSElementsUtility.CreateTextField(ListenerName, "Listener: " , callback =>
+            {
+                ListenerName = callback.newValue;
+            });
         
-        dialogueNameTextField.AddClasses(
+            dialogueNameTextField.AddClasses(
                 "ds-node__textfield",
                 "ds-node__textfield__hidden", 
                 "ds-node__filename-textfield");
             
             titleContainer.Insert(0, dialogueNameTextField);
+            mainContainer.Insert(1, speakerNameTextField);
+            mainContainer.Insert(2, listenerNameTextField);
+            
         
             Port inputPort = this.CreatePort("Dialogue Connection", Orientation.Horizontal, Direction.Input, Port.Capacity.Multi);
             

@@ -54,6 +54,20 @@ namespace DialogueSystem.Utilities
             return relative.Replace(Path.DirectorySeparatorChar, '/')
                 .Replace(Path.AltDirectorySeparatorChar, '/');
         }
+        
+        /// <summary>
+        /// Returns a string containing only the first ASCII digit (0–9) found in the input.
+        /// If no digit is found, returns an empty string.
+        /// </summary>
+        public static string OnlyFirstDigit(this string input) =>
+            string.IsNullOrEmpty(input)
+                ? string.Empty
+                : new string(
+                    input
+                        .Where(c => c >= '0' && c <= '9')
+                        .Take(1)
+                        .ToArray()
+                );
     }
     
 }

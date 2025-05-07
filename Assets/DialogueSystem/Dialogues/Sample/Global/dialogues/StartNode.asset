@@ -16,8 +16,10 @@ MonoBehaviour:
   <Text>k__BackingField: What do you want to do today?
   <Choices>k__BackingField:
   - <Text>k__BackingField: Eat!
+    <Weighting>k__BackingField: 5
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: e9d5494ddca681c49b2f4c8deee4a6a9, type: 2}
   - <Text>k__BackingField: Labour away for Kenneth so that he can make $$$
+    <Weighting>k__BackingField: 3
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 6d488e2d53003cb49b2a2d66414e9796, type: 2}
   <DialogueType>k__BackingField: 1
   <IsStartingDialogue>k__BackingField: 1

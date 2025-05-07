@@ -18,6 +18,7 @@ MonoBehaviour:
     Okay fine stay hungry then >:l'
   <Choices>k__BackingField:
   - <Text>k__BackingField: Next Dialogue
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 763664b934b53e84faf782b1f60cbd1f, type: 2}
   <DialogueType>k__BackingField: 0
   <IsStartingDialogue>k__BackingField: 0

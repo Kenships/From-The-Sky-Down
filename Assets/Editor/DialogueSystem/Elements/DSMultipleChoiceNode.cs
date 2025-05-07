@@ -1,3 +1,4 @@
+using System;
 using DialogueSystem.Elements;
 using DialogueSystem.Utilities;
 using UnityEditor.Experimental.GraphView;
@@ -45,7 +46,7 @@ namespace DialogueSystem.Elements
             
             addChoiceButton.AddToClassList("ds-node__button");
             
-            mainContainer.Insert(1, addChoiceButton);
+            mainContainer.Insert(3, addChoiceButton);
             
             foreach (DSChoiceSaveData choice in Choices)
             {
@@ -86,16 +87,84 @@ namespace DialogueSystem.Elements
                 choiceData.Text = callback.newValue;
             });
             
+            TextField choiceWeightingTextField = DSElementsUtility.CreateTextField(choiceData.Weighting.ToString(), null, callback =>
+            {
+                string firstDigit = callback.newValue.OnlyFirstDigit();
+                
+                TextField target = callback.target as TextField;
+                target.value = firstDigit;
+
+                if (!string.IsNullOrEmpty(firstDigit))
+                {
+                    choiceData.Weighting = int.Parse(firstDigit);
+                    if (choiceData.Weighting > 0)
+                    {
+                        target.style.borderRightWidth = 4;
+                        target.style.borderRightColor = new StyleColor(ColorSlider(choiceData.Weighting));
+                    }
+                    else
+                    {
+                        target.style.borderRightWidth = 0;
+                        target.style.borderRightColor = new StyleColor(Color.clear);
+                    }
+                    
+                }
+            });
+
+            choiceWeightingTextField.maxLength = 1;
+            if (choiceData.Weighting > 0)
+            {
+                choiceWeightingTextField.style.borderRightWidth = 4;
+                choiceWeightingTextField.style.borderRightColor = new StyleColor(ColorSlider(choiceData.Weighting));
+            }
+            else
+            {
+                choiceWeightingTextField.style.borderRightWidth = 0;
+                choiceWeightingTextField.style.borderRightColor = new StyleColor(ColorSlider(choiceData.Weighting));
+            }
+            
             choiceTextField.AddClasses(
                 "ds-node__textfield",
                 "ds-node__choice-textfield",
-                "ds-node__textfield__hidden");
-                
+                "ds-node__textfield__hidden"
+            );
+            
+            choicePort.Add(choiceWeightingTextField);    
             choicePort.Add(choiceTextField);
             choicePort.Add(deleteChoiceButton);
+            
 
             return choicePort;
         }
         #endregion
+        
+        private static Color32 ColorSlider(int value)
+        {
+            switch (value - 1)
+            {
+                
+                case 0:
+                    return new Color32(0,156,26, 255);
+                case 1:
+                    return new Color32(100,227,95, 255);
+                case 2:
+                    return new Color32(180,255,180, 255);
+                case 3:
+                    return new Color32(205,181,255, 255);
+                case 4:
+                    return new Color32(167,150,232, 255);
+                case 5:
+                    return new Color32(137,109,235, 255);
+                case 6:
+                    return new Color32(255,193,0, 255);
+                case 7:
+                    return new Color32(255,154,0, 255);
+                case 8:
+                    return new Color32(255,0,0, 255);
+                default:
+                    return new Color(0, 0, 0);
+            }
+            
+        }
     }
 }

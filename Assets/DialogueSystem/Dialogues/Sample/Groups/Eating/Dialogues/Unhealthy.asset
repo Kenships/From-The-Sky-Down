@@ -20,8 +20,10 @@ MonoBehaviour:
     want to eat?'
   <Choices>k__BackingField:
   - <Text>k__BackingField: YES!
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 2ca1d9324cdf4444c93d576eeb9267df, type: 2}
   - <Text>k__BackingField: Now that you mention it no...
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: e9d5494ddca681c49b2f4c8deee4a6a9, type: 2}
   <DialogueType>k__BackingField: 1
   <IsStartingDialogue>k__BackingField: 0

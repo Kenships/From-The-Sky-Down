@@ -16,6 +16,7 @@ MonoBehaviour:
   <Text>k__BackingField: Well break time is over now
   <Choices>k__BackingField:
   - <Text>k__BackingField: Next Dialogue
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 11400000, guid: 6d488e2d53003cb49b2a2d66414e9796, type: 2}
   <DialogueType>k__BackingField: 0
   <IsStartingDialogue>k__BackingField: 0

@@ -17,6 +17,7 @@ MonoBehaviour:
     ANY CONDITIONS!\nIN CASE OF FIRE MAKE SURE TO COMMIT, PUSH THEN LEAVE THE BUILDING!"
   <Choices>k__BackingField:
   - <Text>k__BackingField: Next Dialogue
+    <Weighting>k__BackingField: 0
     <NextDialogue>k__BackingField: {fileID: 0}
   <DialogueType>k__BackingField: 0
   <IsStartingDialogue>k__BackingField: 0
