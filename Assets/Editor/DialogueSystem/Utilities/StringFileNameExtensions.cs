@@ -64,7 +64,7 @@ namespace DialogueSystem.Utilities
                 ? string.Empty
                 : new string(
                     input
-                        .Where(c => c >= '0' && c <= '9')
+                        .Where(c => c >= '1' && c <= '9')
                         .Take(1)
                         .ToArray()
                 );
