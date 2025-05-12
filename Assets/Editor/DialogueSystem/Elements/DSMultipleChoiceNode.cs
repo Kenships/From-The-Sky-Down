@@ -144,23 +144,23 @@ namespace DialogueSystem.Elements
             {
                 
                 case 0:
-                    return new Color32(0,156,26, 255);
+                    return new Color32(255,0,0, 255);
                 case 1:
-                    return new Color32(100,227,95, 255);
+                    return new Color32(255,154,0, 255);
                 case 2:
-                    return new Color32(180,255,180, 255);
+                    return new Color32(255,193,0, 255);
                 case 3:
-                    return new Color32(205,181,255, 255);
+                    return new Color32(137,109,235, 255);
                 case 4:
                     return new Color32(167,150,232, 255);
                 case 5:
-                    return new Color32(137,109,235, 255);
+                    return new Color32(205,181,255, 255);
                 case 6:
-                    return new Color32(255,193,0, 255);
+                    return new Color32(180,255,180, 255);
                 case 7:
-                    return new Color32(255,154,0, 255);
+                    return new Color32(100,227,95, 255);
                 case 8:
-                    return new Color32(255,0,0, 255);
+                    return new Color32(0,156,26, 255);
                 default:
                     return new Color(0, 0, 0);
             }
