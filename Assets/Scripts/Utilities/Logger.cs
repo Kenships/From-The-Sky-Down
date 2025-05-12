@@ -42,6 +42,6 @@ namespace Utilities
     
     public enum LogCategory{
         Default,
-        Debug,
+        Debug
     }
 }
