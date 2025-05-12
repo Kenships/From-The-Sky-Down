@@ -13,4 +13,8 @@ MonoBehaviour:
   m_Name: LogSettings
   m_EditorClassIdentifier: 
   logSettings:
-    _serializedList: []
+    _serializedList:
+    - Key: 0
+      Value: 1
+    - Key: 1
+      Value: 1
