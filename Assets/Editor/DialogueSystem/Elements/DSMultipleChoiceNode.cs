@@ -66,6 +66,8 @@ namespace DialogueSystem.Elements
             
             DSChoiceSaveData choiceData = userData as DSChoiceSaveData;
 
+            choiceData.Weighting = 5;
+
             Button deleteChoiceButton = DSElementsUtility.CreateButton("X", () =>
             {
                 if(Choices.Count == 1) return;
