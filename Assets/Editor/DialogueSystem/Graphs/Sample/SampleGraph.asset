@@ -32,10 +32,10 @@ MonoBehaviour:
       you want to eat?'
     <Choices>k__BackingField:
     - <Text>k__BackingField: YES!
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: 14c16ab2-dba8-46bd-9df8-6a4afb93acb4
     - <Text>k__BackingField: Now that you mention it no...
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: fba083fb-01e2-4da0-af75-dcfc84040446
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 1
@@ -74,19 +74,19 @@ MonoBehaviour:
     <Text>k__BackingField: What do you guys want to eat Today?
     <Choices>k__BackingField:
     - <Text>k__BackingField: Pizza
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: 77352fd5-6430-44a1-a14e-f40030befcdd
     - <Text>k__BackingField: Rice
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: 83721752-f58c-4864-baf3-e44e0ffd2d38
     - <Text>k__BackingField: Fruits
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: 83721752-f58c-4864-baf3-e44e0ffd2d38
     - <Text>k__BackingField: Mcdonalds
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: 77352fd5-6430-44a1-a14e-f40030befcdd
     - <Text>k__BackingField: nothing
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: a8128735-b35c-4d1e-b10b-d2414785ea5c
     <GroupID>k__BackingField: c44add65-1635-4d0e-a265-9f8ff780dc0e
     <DialogueType>k__BackingField: 1
@@ -110,16 +110,16 @@ MonoBehaviour:
     <Text>k__BackingField: Do you want to work today?
     <Choices>k__BackingField:
     - <Text>k__BackingField: YES!
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     - <Text>k__BackingField: of course :D
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     - <Text>k__BackingField: Why would I ever not want to
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     - <Text>k__BackingField: I Don't want to
-      <Weighting>k__BackingField: 0
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: b7805aa2-0aae-4457-b278-39e30bfe3bf0
     <GroupID>k__BackingField: 68bfaad6-6f5e-4467-9d9e-f4dadf1bc816
     <DialogueType>k__BackingField: 1
@@ -173,10 +173,10 @@ MonoBehaviour:
     <Text>k__BackingField: What do you want to do today?
     <Choices>k__BackingField:
     - <Text>k__BackingField: Eat!
-      <Weighting>k__BackingField: 1
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: fba083fb-01e2-4da0-af75-dcfc84040446
     - <Text>k__BackingField: Labour away for Kenneth so that he can make $$$
-      <Weighting>k__BackingField: 3
+      <Weighting>k__BackingField: 5
       <NodeID>k__BackingField: 2bcc7cf6-de0b-4876-b820-9f910c1c2e8e
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 1
@@ -187,9 +187,6 @@ MonoBehaviour:
     <ListenerName>k__BackingField: 
     <Text>k__BackingField: Dialogue Text.
     <Choices>k__BackingField:
-    - <Text>k__BackingField: New Choice
-      <Weighting>k__BackingField: 0
-      <NodeID>k__BackingField: 
     - <Text>k__BackingField: New Choice
       <Weighting>k__BackingField: 1
       <NodeID>k__BackingField: 
