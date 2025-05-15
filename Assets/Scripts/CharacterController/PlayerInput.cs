@@ -27,7 +27,7 @@ public class PlayerInput : MonoBehaviour
 
     private void SetDirection(InputAction.CallbackContext obj)
     {
-        movementDirection.Value = obj.ReadValue<Vector2>().normalized;
+        movementDirection.Value = obj.ReadValue<Vector2>();
     }
     
     
