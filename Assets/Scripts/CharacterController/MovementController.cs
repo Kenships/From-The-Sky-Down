@@ -3,6 +3,7 @@ using KinematicCharacterController;
 using Obvious.Soap;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Utilities;
 using Logger = Utilities.Logger;
 
 public class MovementController : MonoBehaviour, ICharacterController
@@ -20,28 +21,39 @@ public class MovementController : MonoBehaviour, ICharacterController
     [SerializeField] private float speed;
     [FormerlySerializedAs("jumpForce")] [SerializeField] private float jumpSpeed;
     [SerializeField] private float gravity;
+    [SerializeField] private float initialJumpGravityMultiplier;
     [SerializeField] private float rotationSpeed;
+
+    [Header("Timer Settings")] 
+    [SerializeField] private float cayoteTimeMax;
     
     //Private variables
     private Vector3 _currentInputMovementDirection;
     private Vector3 _lastMovementDirection;
     
+    //Timers
+    private Timer _cayoteTimer;
+    
     //requestFlags
     private bool _jumpRequested;
+    private bool _hasJumped;
     private void Awake()
     {
         motor.CharacterController = this;
+        _cayoteTimer = new Timer(cayoteTimeMax);
     }
 
     private void Start()
     {
         inputDirection.OnValueChanged += SetCurrentMovementDirectionNormalized;
         jumpEvent.OnRaised += RequestJump;
+        _cayoteTimer.OnTimerEnd += RevokeJumpRequest;
     }
 
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
+        if (_lastMovementDirection.Equals(Vector3.zero)) return;
         Quaternion targetRotation = Quaternion.LookRotation(_lastMovementDirection);
         currentRotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime*rotationSpeed);
         characterVisual.rotation = currentRotation;
@@ -49,6 +61,8 @@ public class MovementController : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
+        _cayoteTimer.Tick(deltaTime);
+        
         if (motor.GroundingStatus.IsStableOnGround)
         {
             Vector3 cameraOrientedDirection = GetCameraOrientedDirectionFromInput();
@@ -62,20 +76,34 @@ public class MovementController : MonoBehaviour, ICharacterController
         else
         {
             //Apply Gravity
-            currentVelocity += motor.CharacterUp * (gravity * deltaTime);
+            if (currentVelocity.y > 0)
+            {
+                currentVelocity += motor.CharacterUp * (gravity * initialJumpGravityMultiplier * deltaTime);
+            }
+            else
+            {
+                currentVelocity += motor.CharacterUp * (gravity * deltaTime);
+            }
         }
-
-        if (_jumpRequested)
+        
+        if (motor.GroundingStatus.IsStableOnGround)
         {
-            _jumpRequested = false;
-            
-            motor.ForceUnground(time: 0f);
+            _hasJumped = false;
+        }
+        
+        if (_jumpRequested && !_hasJumped && (motor.GroundingStatus.IsStableOnGround || _cayoteTimer.IsRunning))
+        {
+            _hasJumped = true;
+            _cayoteTimer.ForceEnd();
 
+            motor.ForceUnground(time: 0f);
             var currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
             var targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
-            
+        
             currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
         }
+
+        
     }
 
     public void BeforeCharacterUpdate(float deltaTime)
@@ -144,6 +172,13 @@ public class MovementController : MonoBehaviour, ICharacterController
     private void RequestJump()
     {
         _jumpRequested = true;
+        _cayoteTimer.Restart(cayoteTimeMax);
+    }
+    
+    private void RevokeJumpRequest()
+    {
+        _jumpRequested = false;
+        Logger.Log("Revoke jump request received");
     }
     #endregion
 }

@@ -480,8 +480,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 499160488}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.17188421, y: -0.0021063427, z: 0.00036751755, w: 0.9851149}
-  m_LocalPosition: {x: -0.7902163, y: 3.25, z: -4.488611}
+  m_LocalRotation: {x: 0.14494742, y: -0.0012692382, z: 0.00018593656, w: 0.98943853}
+  m_LocalPosition: {x: -0.7902163, y: 3.25, z: -5.488611}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1049,10 +1049,12 @@ MonoBehaviour:
   motor: {fileID: 1575905562}
   camera: {fileID: 499160490}
   characterVisual: {fileID: 580276049}
-  speed: 5
+  speed: 8
   jumpSpeed: 20
   gravity: -90
+  initialJumpGravityMultiplier: 0.65
   rotationSpeed: 10
+  cayoteTimeMax: 0.2
 --- !u!4 &1575905561
 Transform:
   m_ObjectHideFlags: 0
@@ -1360,7 +1362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Composition:
-    ScreenPosition: {x: 0.0020831823, y: -0.019259244}
+    ScreenPosition: {x: 0.00124979, y: -0.02518517}
     DeadZone:
       Enabled: 0
       Size: {x: 0.2, y: 0.2}
@@ -1391,7 +1393,7 @@ MonoBehaviour:
   TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 0, y: 0, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -1402,7 +1404,7 @@ MonoBehaviour:
       Radius: 2
       Height: 5
     Center:
-      Radius: 4
+      Radius: 5
       Height: 2.25
     Bottom:
       Radius: 2.5
@@ -1490,8 +1492,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1698489397}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.17188418, y: -0.0021063422, z: 0.00036751744, w: 0.9851149}
-  m_LocalPosition: {x: -0.7902163, y: 3.25, z: -4.488611}
+  m_LocalRotation: {x: 0.14494742, y: -0.001269238, z: 0.00018593651, w: 0.98943853}
+  m_LocalPosition: {x: -0.7902163, y: 3.25, z: -5.488611}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
