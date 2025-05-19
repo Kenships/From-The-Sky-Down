@@ -14,12 +14,13 @@ public class MovementController : MonoBehaviour, ICharacterController
     
     [Header("Other References")]
     [SerializeField] private KinematicCharacterMotor motor;
-    [SerializeField] private Camera camera;
+    [SerializeField] private Camera mainCamera;
     [SerializeField] private Transform characterVisual;
     
     [Header("Movement Settings")]
-    [SerializeField] private float speed;
-    [FormerlySerializedAs("jumpForce")] [SerializeField] private float jumpSpeed;
+    [SerializeField] private float groundedSpeed;
+    [SerializeField] private float groundedAcceleration;
+    [SerializeField] private float jumpSpeed;
     [SerializeField] private float gravity;
     [SerializeField] private float initialJumpGravityMultiplier;
     [SerializeField] private float rotationSpeed;
@@ -39,6 +40,10 @@ public class MovementController : MonoBehaviour, ICharacterController
     private bool _hasJumped;
     private void Awake()
     {
+        if (!mainCamera)
+        {
+            mainCamera = Camera.main;
+        }
         motor.CharacterController = this;
         _cayoteTimer = new Timer(cayoteTimeMax);
     }
@@ -61,49 +66,40 @@ public class MovementController : MonoBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
+        
+        //Variable Cache
+        bool isStableOnGround = motor.GroundingStatus.IsStableOnGround;
+        
+        /* Update Timers */
         _cayoteTimer.Tick(deltaTime);
         
-        if (motor.GroundingStatus.IsStableOnGround)
+        /* Movement Sequence */
+        if (isStableOnGround)
         {
-            Vector3 cameraOrientedDirection = GetCameraOrientedDirectionFromInput();
-            
-            if(!cameraOrientedDirection.Equals(Vector3.zero))
-                _lastMovementDirection = cameraOrientedDirection;
-            
-            var groundedMovement = motor.GetDirectionTangentToSurface(cameraOrientedDirection.normalized, motor.GroundingStatus.GroundNormal);
-            currentVelocity = groundedMovement * speed;
+            var targetVelocity = CalculateGroundMovementVelocity();
+            currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * groundedAcceleration);
         }
         else
         {
+            //TODO: In air control
+            
+            
+            
             //Apply Gravity
-            if (currentVelocity.y > 0)
-            {
-                currentVelocity += motor.CharacterUp * (gravity * initialJumpGravityMultiplier * deltaTime);
-            }
-            else
-            {
-                currentVelocity += motor.CharacterUp * (gravity * deltaTime);
-            }
+            SimulateGravity(ref currentVelocity, deltaTime);
         }
         
-        if (motor.GroundingStatus.IsStableOnGround)
+        /* Jumping Sequence */
+        
+        if (isStableOnGround)
         {
             _hasJumped = false;
         }
         
-        if (_jumpRequested && !_hasJumped && (motor.GroundingStatus.IsStableOnGround || _cayoteTimer.IsRunning))
+        if (_jumpRequested && !_hasJumped && (isStableOnGround || _cayoteTimer.IsRunning))
         {
-            _hasJumped = true;
-            _cayoteTimer.ForceEnd();
-
-            motor.ForceUnground(time: 0f);
-            var currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
-            var targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
-        
-            currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
+            PerformJump(ref currentVelocity);
         }
-
-        
     }
 
     public void BeforeCharacterUpdate(float deltaTime)
@@ -148,11 +144,54 @@ public class MovementController : MonoBehaviour, ICharacterController
         
     }
 
+    #region Player Actions
+
+    private void PerformJump(ref Vector3 currentVelocity)
+    {
+        _hasJumped = true;
+        _cayoteTimer.ForceEnd();
+
+        motor.ForceUnground(time: 0f);
+        var currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
+        var targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
+            
+        currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
+    }
+
+    #endregion
+    #region Calculations
+
+    private Vector3 CalculateGroundMovementVelocity()
+    {
+        Vector3 cameraOrientedDirection = GetCameraOrientedDirectionFromInput();
+            
+        if(!cameraOrientedDirection.Equals(Vector3.zero))
+            _lastMovementDirection = cameraOrientedDirection;
+            
+        var groundedMovement = motor.GetDirectionTangentToSurface(cameraOrientedDirection.normalized, motor.GroundingStatus.GroundNormal);
+        var targetVelocity = groundedMovement * groundedSpeed;
+
+        return targetVelocity;
+    }
+
+    private void SimulateGravity(ref Vector3 currentVelocity, float deltaTime)
+    {
+        if (currentVelocity.y > 0)
+        {
+            currentVelocity += motor.CharacterUp * (gravity * initialJumpGravityMultiplier * deltaTime);
+        }
+        else
+        {
+            currentVelocity += motor.CharacterUp * (gravity * deltaTime);
+        }
+    }
+
+    #endregion
     #region Utilities
 
     private Vector3 GetCameraOrientedDirectionFromInput()
     {
-        float yaw = camera.transform.eulerAngles.y;
+        float yaw = mainCamera.transform.eulerAngles.y;
         return Quaternion.Euler(0, yaw, 0) * _currentInputMovementDirection;
     }
 
@@ -178,7 +217,6 @@ public class MovementController : MonoBehaviour, ICharacterController
     private void RevokeJumpRequest()
     {
         _jumpRequested = false;
-        Logger.Log("Revoke jump request received");
     }
     #endregion
 }
