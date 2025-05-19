@@ -1114,16 +1114,21 @@ MonoBehaviour:
   jumpEvent: {fileID: 11400000, guid: 0aa4091578f784045a98b27bec7ad134, type: 2}
   motor: {fileID: 1575905562}
   characterVisual: {fileID: 580276049}
-  groundedSpeed: 15
+  groundedSpeed: 20
   groundedAcceleration: 6
   jumpSpeed: 20
+  airControlStrength: 70
+  maxAirSpeed: 15
   gravity: -90
   initialJumpGravityMultiplier: 0.65
   rotationSpeed: 10
   accelerationTiltSpeed: 3
-  accelerationTiltRecoverySpeed: 0.1
+  accelerationTiltRecoverySpeed: 3
+  accelerationTiltDeadZone: 5
   accelerationTiltFactor: 0.1
   cayoteTimeMax: 0.2
+  accelerationMagnitude: 0
+  accelerationVector: {x: 0, y: 0, z: 0}
 --- !u!4 &1575905561
 Transform:
   m_ObjectHideFlags: 0

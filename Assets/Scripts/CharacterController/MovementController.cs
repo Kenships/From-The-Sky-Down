@@ -20,22 +20,32 @@ namespace CharacterController
         [SerializeField] private float groundedSpeed;
         [SerializeField] private float groundedAcceleration;
         [SerializeField] private float jumpSpeed;
+        [SerializeField] private float airControlStrength;
+        [SerializeField] private float maxAirSpeed;
         [SerializeField] private float gravity;
         [SerializeField] private float initialJumpGravityMultiplier;
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float accelerationTiltSpeed;
         [SerializeField] private float accelerationTiltRecoverySpeed;
+        [SerializeField] private float accelerationTiltDeadZone;
         [SerializeField] private float accelerationTiltFactor;
 
         [Header("Timer Settings")] 
         [SerializeField] private float cayoteTimeMax;
+
+        [Header("Debug values")] 
+        [ReadOnly] 
+        [SerializeField]
+        private float accelerationMagnitude;
+        [ReadOnly] 
+        [SerializeField]
+        private Vector3 accelerationVector;
     
         //Private variables
         private Camera _mainCamera;
         private Vector3 _currentInputMovementDirection;
         private Vector3 _lastGroundDirection;
         private Vector3 _lastGroundVelocity;
-        private Quaternion _lastGroundRotation;
     
         //Timers
         private Timer _cayoteTimer;
@@ -63,25 +73,18 @@ namespace CharacterController
 
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
-            _lastGroundRotation = currentRotation;
             /* Character look rotation */
             
             if (_lastGroundDirection.Equals(Vector3.zero)) return;
-            Quaternion targetRotation = Quaternion.LookRotation(_lastGroundDirection);
+            
+            Quaternion targetRotation = Quaternion.LookRotation(_currentInputMovementDirection);
             currentRotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime*rotationSpeed);
-            characterVisual.rotation = currentRotation;
+            
             
             /* Character tilt */
-
-            if (motor.GroundingStatus.IsStableOnGround)
-            {
-                PerformTilt(ref currentRotation, deltaTime);
-            }
-            else
-            {
-                Quaternion uprightRotation = new Quaternion(0f, currentRotation.y, 0f, currentRotation.w);
-                currentRotation = Quaternion.Slerp(currentRotation, uprightRotation, deltaTime * accelerationTiltRecoverySpeed);
-            }
+            PerformTilt(ref currentRotation, deltaTime);
+            
+            characterVisual.rotation = currentRotation;
         }
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -103,7 +106,42 @@ namespace CharacterController
             }
             else
             {
-                //TODO: In air control
+                //In air control
+                Vector3 cameraOrientedDirection = GetCameraOrientedDirectionFromInput();
+                if (cameraOrientedDirection.sqrMagnitude > 0f)
+                {
+                    var planarMovement = Vector3.ProjectOnPlane(cameraOrientedDirection, motor.CharacterUp) * cameraOrientedDirection.magnitude;
+                    var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
+                    
+                    var movementForce = planarMovement * (airControlStrength * deltaTime);
+
+                    if (currentPlanarVelocity.sqrMagnitude < maxAirSpeed * maxAirSpeed)
+                    {
+                        var targetPlanarVelocity = currentPlanarVelocity + movementForce;
+                    
+                        targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, maxAirSpeed);
+                        
+                        movementForce = targetPlanarVelocity - currentPlanarVelocity;
+                    }
+                    else if (Vector3.Dot(currentPlanarVelocity, movementForce) > 0f)
+                    {
+                        var constrainedMovementForce = Vector3.ProjectOnPlane(movementForce, currentPlanarVelocity.normalized);
+                        
+                        movementForce = constrainedMovementForce;
+                    }
+                    
+                    
+                    currentVelocity += movementForce;
+                }
+                
+                // Vector3 inputDirection = GetCameraOrientedDirectionFromInput();
+                //
+                // if (!inputDirection.AproxEquals(Vector3.zero))
+                // {
+                //     Vector3 airMovement = inputDirection.normalized * (groundedSpeed * airControlStrength);
+                //     _lastGroundDirection = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+                //     currentVelocity = Vector3.Lerp(currentVelocity, new Vector3(airMovement.x, currentVelocity.y, airMovement.z), deltaTime * airControlStrength);
+                // }
             
             
             
@@ -182,25 +220,32 @@ namespace CharacterController
 
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
         {
-            Vector3 accel = (motor.BaseVelocity - _lastGroundVelocity) / deltaTime;
+            Vector3 motorVelocity = motor.BaseVelocity;
+            
+            Vector3 motorGroundVelocity = new Vector3(motorVelocity.x, 0, motorVelocity.z);
+            
+            Vector3 accel = (motorGroundVelocity - _lastGroundVelocity) / deltaTime;
 
-            accel = Vector3.ProjectOnPlane(accel, Vector3.up);
+            accelerationVector = accel;
+            accelerationMagnitude = accelerationVector.magnitude;
             
             Vector3 upWithLean = (Vector3.up + accel * accelerationTiltFactor).normalized;
             
             Vector3 flatForward = Vector3.ProjectOnPlane(motor.CharacterForward, Vector3.up).normalized;
             
+            Debug.DrawLine(transform.position, transform.position + accel, Color.red);
+            Debug.DrawLine(transform.position, transform.position + motorGroundVelocity, Color.green);
+            
             Quaternion targetRot = Quaternion.LookRotation(flatForward, upWithLean);
             
-            Debug.DrawLine(transform.position, transform.position + accel, Color.red);
+            Quaternion uprightRotation = new Quaternion(0f, currentRotation.y, 0f, currentRotation.w);
             
-            if (!accel.AproxEquals(Vector3.zero))
+            float angle = Quaternion.Angle(targetRot, uprightRotation);
+
+            if (angle > accelerationTiltDeadZone)
             {
-                currentRotation = Quaternion.Slerp(currentRotation, targetRot, Time.deltaTime * accelerationTiltSpeed);
-            }
-            else
-            {
-                currentRotation = Quaternion.Slerp(currentRotation, targetRot, Time.deltaTime * accelerationTiltRecoverySpeed);
+                float tiltSpeed = motor.GroundingStatus.IsStableOnGround ? accelerationTiltSpeed : accelerationTiltRecoverySpeed;
+                currentRotation = Quaternion.Slerp(currentRotation, targetRot, deltaTime * tiltSpeed);
             }
             
             
