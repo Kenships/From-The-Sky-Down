@@ -47,6 +47,8 @@ namespace DialogueSystem.Windows
         }
         public DSGraphView(DSEditorWindow dsEditorWindow)
         {
+            RegisterCallback<KeyDownEvent>(OnUndo);
+            RegisterCallback<KeyDownEvent>(OnRedo);
             editorWindow = dsEditorWindow;
 
             ungroupedNodes = new SerializedDictionary<string, DSNodeErrorData>();
@@ -68,7 +70,27 @@ namespace DialogueSystem.Windows
             AddMiniMapSyles();
         }
 
-        
+        private void OnUndo(KeyDownEvent evt)
+        {
+            bool ctrl = evt.ctrlKey || evt.commandKey;
+
+            if (ctrl && evt.keyCode == KeyCode.Z)
+            {
+                DSHistoryUtility.Undo();
+                Debug.Log("Undo");
+            }
+        }
+
+        private void OnRedo(KeyDownEvent evt)
+        {
+            bool ctrl = evt.ctrlKey || evt.commandKey;
+
+            if (ctrl && evt.keyCode == KeyCode.Y)
+            {
+                DSHistoryUtility.Redo();
+                Debug.Log("Redo");
+            }
+        }
 
 
         #region Overrides Methods
@@ -121,19 +143,17 @@ namespace DialogueSystem.Windows
             DSNode node = Activator.CreateInstance(nodeType) as DSNode;
             
             node.Initialize(nodeName, position, this);
-
+            AddUngroupedNode(node);
             if (shouldDraw)
             {
                 node.Draw();
+                SnapShot();
             }
-            
-            
-            AddUngroupedNode(node);
             
             return node;
         }
 
-        public DSGroup CreateGroup(string dialogueGroup, Vector2 eventInfoLocalMousePosition)
+        public DSGroup CreateGroup(string dialogueGroup, Vector2 eventInfoLocalMousePosition, bool isLoaded = false)
         {
             DSGroup group = new DSGroup(dialogueGroup, eventInfoLocalMousePosition);
 
@@ -147,6 +167,11 @@ namespace DialogueSystem.Windows
                 {
                     group.AddElement(node);
                 }
+            }
+
+            if (!isLoaded)
+            {
+                SnapShot();
             }
             
             return group;
@@ -568,6 +593,12 @@ namespace DialogueSystem.Windows
         public void ToggleMiniMap()
         {
             minimap.visible = !minimap.visible;
+        }
+
+        private void SnapShot()
+        {
+            DSHistoryUtility.SetGraphInfo(this, DSEditorWindow.fileNameTextField.value);
+            DSHistoryUtility.SaveSnapshot();
         }
         #endregion
     }

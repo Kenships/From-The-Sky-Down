@@ -13,7 +13,7 @@ namespace DialogueSystem.Windows
         private readonly string defaultFileName = "DialogueFile";
         private Button saveButton;
         private Button minimapButton;
-        private static TextField fileNameTextField;
+        public static TextField fileNameTextField;
         [MenuItem("Window/DS/Dialogue Graph")] 
         public static void Open()
         {
@@ -22,6 +22,7 @@ namespace DialogueSystem.Windows
 
         private void CreateGUI()
         {
+            DSHistoryUtility.Initialize();
             AddGraphView();
             AddToolBar();
             AddStyles();
@@ -62,7 +63,7 @@ namespace DialogueSystem.Windows
         private void AddGraphView()
         {
             graphView = new DSGraphView(this);
-        
+            
             graphView.StretchToParentSize();
         
             rootVisualElement.Add(graphView);

@@ -48,6 +48,21 @@ namespace DialogueSystem.Utilities
             loadedNodes = new Dictionary<string, DSNode>();
         }
 
+        public static void Initialize(string graphName)
+        {
+            graphFileName = graphName;
+            containerFolderPath = $"Assets/DialogueSystem/Dialogues/{graphFileName}";
+
+            groups = new List<DSGroup>();
+            nodes = new List<DSNode>();
+            
+            createdDialogueGroups = new Dictionary<string, DSDialogueGroupSO>();
+            createdDialogues = new Dictionary<string, DSDialogueSO>();
+            
+            loadedGroups = new Dictionary<string, DSGroup>();
+            loadedNodes = new Dictionary<string, DSNode>();
+        }
+
         #region Load Methods
 
         public static void Load(string path)
@@ -72,6 +87,18 @@ namespace DialogueSystem.Utilities
             LoadNodes(graphData.Nodes);
             LoadNodeConnections();
         }
+        
+        public static void LoadFromJson(string obj)
+        {
+            DSGraphSaveData graphData = JsonUtility.FromJson<DSGraphSaveData>(obj);
+            Initialize(graphData.FileName);
+            graphView.ClearGraph();
+            DSEditorWindow.UpdateFileName(graphData.FileName);
+
+            LoadGroups(graphData.Groups);
+            LoadNodes(graphData.Nodes);
+            LoadNodeConnections();
+        }
 
         
 
@@ -79,13 +106,12 @@ namespace DialogueSystem.Utilities
         {
             foreach (DSGroupSaveData groupData in groups)
             {
-                DSGroup group = graphView.CreateGroup(groupData.Name, groupData.Position);
+                DSGroup group = graphView.CreateGroup(groupData.Name, groupData.Position, true);
                 
                 group.ID = groupData.ID;
                 
                 loadedGroups.Add(group.ID, group);
             }
-            
         }
 
         private static void LoadNodes(List<DSNodeSaveData> nodes)
@@ -102,12 +128,18 @@ namespace DialogueSystem.Utilities
                 node.ListenerName = nodeData.ListenerName;
                 node.Text = nodeData.Text;
                 
+                while (loadedNodes.ContainsKey(node.ID))
+                {
+                    node.ID += " (Clone)";
+                }
+                
+                loadedNodes.Add(node.ID, node);
                 
                 node.Draw();
                 
                 graphView.AddElement(node);
+
                 
-                loadedNodes.Add(node.ID, node);
 
                 if (string.IsNullOrEmpty(nodeData.GroupID))
                 {
