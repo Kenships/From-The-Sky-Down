@@ -82,10 +82,6 @@ namespace CharacterController
                 Quaternion uprightRotation = new Quaternion(0f, currentRotation.y, 0f, currentRotation.w);
                 currentRotation = Quaternion.Slerp(currentRotation, uprightRotation, deltaTime * accelerationTiltRecoverySpeed);
             }
-            
-            
-            
-            
         }
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -187,13 +183,17 @@ namespace CharacterController
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
         {
             Vector3 accel = (motor.BaseVelocity - _lastGroundVelocity) / deltaTime;
+
+            accel = Vector3.ProjectOnPlane(accel, Vector3.up);
             
             Vector3 upWithLean = (Vector3.up + accel * accelerationTiltFactor).normalized;
             
             Vector3 flatForward = Vector3.ProjectOnPlane(motor.CharacterForward, Vector3.up).normalized;
             
             Quaternion targetRot = Quaternion.LookRotation(flatForward, upWithLean);
-
+            
+            Debug.DrawLine(transform.position, transform.position + accel, Color.red);
+            
             if (!accel.AproxEquals(Vector3.zero))
             {
                 currentRotation = Quaternion.Slerp(currentRotation, targetRot, Time.deltaTime * accelerationTiltSpeed);
