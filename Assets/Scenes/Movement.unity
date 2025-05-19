@@ -514,8 +514,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 499160488}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14494742, y: -0.0012692382, z: 0.00018593656, w: 0.98943853}
-  m_LocalPosition: {x: -0.7902163, y: 3.25, z: -5.488611}
+  m_LocalRotation: {x: 0.15046716, y: -0.0012681806, z: 0.0001930172, w: 0.9886142}
+  m_LocalPosition: {x: 0, y: 3.25, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1113,14 +1113,16 @@ MonoBehaviour:
   inputDirection: {fileID: 11400000, guid: 58e3afb1a87f7144a9798028c39cf6a0, type: 2}
   jumpEvent: {fileID: 11400000, guid: 0aa4091578f784045a98b27bec7ad134, type: 2}
   motor: {fileID: 1575905562}
-  mainCamera: {fileID: 499160490}
   characterVisual: {fileID: 580276049}
-  groundedSpeed: 8
+  groundedSpeed: 15
   groundedAcceleration: 6
   jumpSpeed: 20
   gravity: -90
   initialJumpGravityMultiplier: 0.65
   rotationSpeed: 10
+  accelerationTiltSpeed: 3
+  accelerationTiltRecoverySpeed: 0.1
+  accelerationTiltFactor: 0.1
   cayoteTimeMax: 0.2
 --- !u!4 &1575905561
 Transform:
@@ -1131,7 +1133,7 @@ Transform:
   m_GameObject: {fileID: 1575905555}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.7902163, y: 0, z: -0.48861113}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1438,7 +1440,7 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 0.91, z: 0}
+  TargetOffset: {x: 0, y: 0.85, z: 0}
   Damping: {x: 0.5, y: 0.5}
   Lookahead:
     Enabled: 0
@@ -1460,7 +1462,7 @@ MonoBehaviour:
   TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 0, y: 0, z: 0}
+    PositionDamping: {x: 1, y: 0.5, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -1559,8 +1561,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1698489397}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14494742, y: -0.001269238, z: 0.00018593651, w: 0.98943853}
-  m_LocalPosition: {x: -0.7902163, y: 3.25, z: -5.488611}
+  m_LocalRotation: {x: 0.15046716, y: -0.0012681804, z: 0.00019301714, w: 0.9886142}
+  m_LocalPosition: {x: 0, y: 3.25, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
