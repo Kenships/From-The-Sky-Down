@@ -5,11 +5,18 @@ using Utilities;
 
 namespace CharacterController
 {
+    public enum PlayerState
+    {
+        Idle,
+        Running,
+        Jumping,
+        Falling,
+        Dashing
+    }
     public class MovementController : MonoBehaviour, ICharacterController
     {
-        [Header("Soap References")]
-        [SerializeField] private Vector2Variable inputDirection;
-        [SerializeField] private ScriptableEventNoParam jumpEvent;
+        [Header("Input References")]
+        [SerializeField] private InputEventsSO inputEvents;
     
         [Header("Other References")]
         [SerializeField] private KinematicCharacterMotor motor;
@@ -29,9 +36,14 @@ namespace CharacterController
         [SerializeField] private float accelerationTiltRecoverySpeed;
         [SerializeField] private float accelerationTiltDeadZone;
         [SerializeField] private float accelerationTiltFactor;
+        [SerializeField] private float dashSpeed;
+        [SerializeField] private float dashDrag;
+        [SerializeField] private float dashCooldown;
 
         [Header("Timer Settings")] 
         [SerializeField] private float cayoteTimeMax;
+        [SerializeField] private float jumpBufferTimeMax;
+        [SerializeField] private float dashBufferTimeMax;
 
         [Header("Debug values")] 
         [ReadOnly] 
@@ -40,19 +52,26 @@ namespace CharacterController
         [ReadOnly] 
         [SerializeField]
         private Vector3 accelerationVector;
+        [ReadOnly] 
+        [SerializeField]
+        private PlayerState playerState;
     
         //Private variables
         private Camera _mainCamera;
-        private Vector3 _currentInputMovementDirection;
+        private Vector3 _currentInputMovementDirectionNormalized;
         private Vector3 _lastGroundDirection;
         private Vector3 _lastGroundVelocity;
     
         //Timers
         private Timer _cayoteTimer;
+        private Timer _jumpBufferTimer;
+        private Timer _dashBufferTimer;
+        private Timer _dashCooldownTimer;
     
         //requestFlags
         private bool _jumpRequested;
-        private bool _hasJumped;
+        private bool _dashRequested;
+     
         private void Awake()
         {
             _mainCamera = Camera.main;
@@ -61,16 +80,30 @@ namespace CharacterController
             motor.CharacterController = this;
             
             _cayoteTimer = new Timer(cayoteTimeMax);
+            _jumpBufferTimer = new Timer(jumpBufferTimeMax);
+            _dashBufferTimer = new Timer(dashBufferTimeMax);
+            _dashCooldownTimer = new Timer(dashCooldown);
         }
 
         private void Start()
         {
-            inputDirection.OnValueChanged += SetCurrentMovementDirectionNormalized;
-            jumpEvent.OnRaised += RequestJump;
+            inputEvents.inputDirection.OnValueChanged += SetCurrentMovementDirectionNormalized;
+            inputEvents.jumpEvent.OnRaised += RequestJump;
+            inputEvents.dashEvent.OnRaised += RequestDash;
             _cayoteTimer.OnTimerEnd += RevokeJumpRequest;
+            _jumpBufferTimer.OnTimerEnd += RevokeJumpRequest;
+            _dashBufferTimer.OnTimerEnd += RevokeDashRequest;
         }
 
-
+        public void BeforeCharacterUpdate(float deltaTime)
+        {
+            /* Update Timers */
+            _cayoteTimer.Tick(deltaTime);
+            _jumpBufferTimer.Tick(deltaTime);
+            _dashBufferTimer.Tick(deltaTime);
+            _dashCooldownTimer.Tick(deltaTime);
+        }
+        
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
             /* Character look rotation */
@@ -94,25 +127,33 @@ namespace CharacterController
         
             //Variable Cache
             bool isStableOnGround = motor.GroundingStatus.IsStableOnGround;
-        
-            /* Update Timers */
-            _cayoteTimer.Tick(deltaTime);
+            Vector3 cameraOrientedInput = GetCameraOrientedDirectionFromInput();
         
             /* Movement Sequence */
             _lastGroundVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
             if (isStableOnGround)
             {
-                var targetVelocity = CalculateGroundMovementVelocity();
-                currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * groundedAcceleration);
-                
+                //Reset buffer timers
+                _cayoteTimer.Restart(cayoteTimeMax);
+
+                if (playerState == PlayerState.Dashing)
+                {
+                    //Apply drag
+                    var targetVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
+                    currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashDrag);
+                }
+                else
+                {
+                    var targetVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
+                    currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * groundedAcceleration);
+                }
             }
             else
             {
                 //In air control
-                Vector3 cameraOrientedDirection = GetCameraOrientedDirectionFromInput();
-                if (cameraOrientedDirection.sqrMagnitude > 0f)
+                if (cameraOrientedInput.sqrMagnitude > 0f)
                 {
-                    var planarMovement = Vector3.ProjectOnPlane(cameraOrientedDirection, motor.CharacterUp) * cameraOrientedDirection.magnitude;
+                    var planarMovement = Vector3.ProjectOnPlane(cameraOrientedInput, motor.CharacterUp) * cameraOrientedInput.magnitude;
                     var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
                     
                     var movementForce = planarMovement * (airControlStrength * deltaTime);
@@ -139,22 +180,50 @@ namespace CharacterController
                 SimulateGravity(ref currentVelocity, deltaTime);
             }
         
-            /* Jumping Sequence */
-        
-            if (isStableOnGround)
-            {
-                _hasJumped = false;
-            }
-        
-            if (_jumpRequested && !_hasJumped && (isStableOnGround || _cayoteTimer.IsRunning))
+            
+            /* Jumping & dashing Sequence */
+            bool jumpThisFrame = _jumpRequested && (isStableOnGround || _cayoteTimer.IsRunning) && playerState != PlayerState.Dashing;
+            bool dashThisFrame = _dashRequested && isStableOnGround && playerState != PlayerState.Dashing;
+
+            if (jumpThisFrame)
             {
                 PerformJump(ref currentVelocity);
             }
+            else if (dashThisFrame)
+            {
+                PerformDash(ref currentVelocity);
+            }
+
+            UpdatePlayerState(currentVelocity, isStableOnGround);
         }
 
-        public void BeforeCharacterUpdate(float deltaTime)
+        private void UpdatePlayerState(Vector3 currentVelocity, bool isStableOnGround)
         {
-            
+            switch (playerState)
+            {
+                case PlayerState.Jumping:
+                    if(currentVelocity.y < 0)
+                    {
+                        playerState = PlayerState.Falling;
+                    }
+                    break;
+                case PlayerState.Falling:
+                    if (isStableOnGround)
+                    {
+                        playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
+                    }
+
+                    break;
+                case PlayerState.Dashing:
+                    if (!_dashCooldownTimer.IsRunning)
+                    {
+                        playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
+                    }
+                    break;
+                default:
+                    playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
+                    break;
+            }
         }
 
         public void PostGroundingUpdate(float deltaTime)
@@ -198,7 +267,7 @@ namespace CharacterController
 
         private void PerformJump(ref Vector3 currentVelocity)
         {
-            _hasJumped = true;
+            playerState = PlayerState.Jumping;
             _cayoteTimer.ForceEnd();
 
             motor.ForceUnground(time: 0f);
@@ -206,6 +275,13 @@ namespace CharacterController
             var targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
             
             currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
+        }
+        
+        private void PerformDash(ref Vector3 currentVelocity)
+        {
+            _dashCooldownTimer.Restart(dashCooldown);
+            playerState = PlayerState.Dashing;
+            currentVelocity += _lastGroundDirection * dashSpeed;
         }
 
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
@@ -243,10 +319,8 @@ namespace CharacterController
         #endregion
         #region Calculations
 
-        private Vector3 CalculateGroundMovementVelocity()
+        private Vector3 CalculateGroundMovementVelocityInDirection(Vector3 cameraOrientedDirection)
         {
-            Vector3 cameraOrientedDirection = GetCameraOrientedDirectionFromInput();
-            
             if(!cameraOrientedDirection.Equals(Vector3.zero))
                 _lastGroundDirection = cameraOrientedDirection;
             
@@ -274,7 +348,7 @@ namespace CharacterController
         private Vector3 GetCameraOrientedDirectionFromInput()
         {
             float yaw = _mainCamera.transform.eulerAngles.y;
-            return Quaternion.Euler(0, yaw, 0) * _currentInputMovementDirection;
+            return Quaternion.Euler(0, yaw, 0) * _currentInputMovementDirectionNormalized;
         }
 
         #endregion
@@ -282,17 +356,28 @@ namespace CharacterController
     
         private void SetCurrentMovementDirectionNormalized(Vector2 direction)
         {
-            _currentInputMovementDirection = new Vector3(direction.x, 0, direction.y).normalized;
+            _currentInputMovementDirectionNormalized = new Vector3(direction.x, 0, direction.y).normalized;
         }
         private void RequestJump()
         {
+            _jumpBufferTimer.Restart(jumpBufferTimeMax);
             _jumpRequested = true;
-            _cayoteTimer.Restart(cayoteTimeMax);
         }
-    
+        
         private void RevokeJumpRequest()
         {
             _jumpRequested = false;
+        }
+        
+        private void RequestDash()
+        {
+            _dashBufferTimer.Restart(dashBufferTimeMax);
+            _dashRequested = true;
+        }
+        
+        private void RevokeDashRequest()
+        {
+            _dashRequested = false;
         }
         #endregion
     }

@@ -8,6 +8,7 @@ namespace Utilities
         public float RemainingSeconds { get; private set; }
 
         public float PreviousDuration { get; private set; }
+        public float StartTime { get; private set; }
 
         public event Action OnTimerEnd;
         public event Action OnTimerStart;
@@ -38,6 +39,7 @@ namespace Utilities
             {
                 OnTimerStart?.Invoke();
                 _isStarted = true;
+                StartTime = Time.time;
             }
             
             RemainingSeconds -= deltaTime;

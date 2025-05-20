@@ -1096,8 +1096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5036a08ea8110fa44ae0ba19b7a8373b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementDirection: {fileID: 11400000, guid: 58e3afb1a87f7144a9798028c39cf6a0, type: 2}
-  jumpEvent: {fileID: 11400000, guid: 0aa4091578f784045a98b27bec7ad134, type: 2}
+  inputEvents: {fileID: 11400000, guid: 0b954dd1e2310cc4e8012d97df98fb23, type: 2}
 --- !u!114 &1575905557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1110,15 +1109,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7f09ab0214098f46ac3231e12986bc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputDirection: {fileID: 11400000, guid: 58e3afb1a87f7144a9798028c39cf6a0, type: 2}
-  jumpEvent: {fileID: 11400000, guid: 0aa4091578f784045a98b27bec7ad134, type: 2}
+  inputEvents: {fileID: 11400000, guid: 0b954dd1e2310cc4e8012d97df98fb23, type: 2}
   motor: {fileID: 1575905562}
   characterVisual: {fileID: 580276049}
-  groundedSpeed: 20
+  groundedSpeed: 15
   groundedAcceleration: 6
   jumpSpeed: 20
   airControlStrength: 70
-  maxAirSpeed: 15
+  maxAirSpeed: 12
   gravity: -90
   initialJumpGravityMultiplier: 0.65
   rotationSpeed: 10
@@ -1126,9 +1124,15 @@ MonoBehaviour:
   accelerationTiltRecoverySpeed: 3
   accelerationTiltDeadZone: 5
   accelerationTiltFactor: 0.1
-  cayoteTimeMax: 0.2
+  dashSpeed: 50
+  dashDrag: 10
+  dashCooldown: 0.4
+  cayoteTimeMax: 0.15
+  jumpBufferTimeMax: 0.2
+  dashBufferTimeMax: 0.2
   accelerationMagnitude: 0
   accelerationVector: {x: 0, y: 0, z: 0}
+  playerState: 0
 --- !u!4 &1575905561
 Transform:
   m_ObjectHideFlags: 0
