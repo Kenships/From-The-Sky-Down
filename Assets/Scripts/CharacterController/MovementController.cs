@@ -77,7 +77,7 @@ namespace CharacterController
             
             if (_lastGroundDirection.Equals(Vector3.zero)) return;
             
-            Quaternion targetRotation = Quaternion.LookRotation(_currentInputMovementDirection);
+            Quaternion targetRotation = Quaternion.LookRotation(_lastGroundDirection);
             currentRotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime*rotationSpeed);
             
             
@@ -89,6 +89,8 @@ namespace CharacterController
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
         {
+            /*TODO: _lastGroundVelocity is kinda just used for the last input direction,
+             but is also used for calculating tilt, so probably needs to be refactored sometime*/
         
             //Variable Cache
             bool isStableOnGround = motor.GroundingStatus.IsStableOnGround;
@@ -97,9 +99,9 @@ namespace CharacterController
             _cayoteTimer.Tick(deltaTime);
         
             /* Movement Sequence */
+            _lastGroundVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
             if (isStableOnGround)
             {
-                _lastGroundVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
                 var targetVelocity = CalculateGroundMovementVelocity();
                 currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * groundedAcceleration);
                 
@@ -133,18 +135,6 @@ namespace CharacterController
                     
                     currentVelocity += movementForce;
                 }
-                
-                // Vector3 inputDirection = GetCameraOrientedDirectionFromInput();
-                //
-                // if (!inputDirection.AproxEquals(Vector3.zero))
-                // {
-                //     Vector3 airMovement = inputDirection.normalized * (groundedSpeed * airControlStrength);
-                //     _lastGroundDirection = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-                //     currentVelocity = Vector3.Lerp(currentVelocity, new Vector3(airMovement.x, currentVelocity.y, airMovement.z), deltaTime * airControlStrength);
-                // }
-            
-            
-            
                 //Apply Gravity
                 SimulateGravity(ref currentVelocity, deltaTime);
             }
