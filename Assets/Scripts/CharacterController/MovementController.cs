@@ -1,5 +1,4 @@
 using KinematicCharacterController;
-using Obvious.Soap;
 using UnityEngine;
 using Utilities;
 
@@ -20,10 +19,11 @@ namespace CharacterController
     
         [Header("Other References")]
         [SerializeField] private KinematicCharacterMotor motor;
-        
-        [SerializeField] private Transform characterVisual;
+
+        [SerializeField] private Animator animator;
     
         [Header("Movement Settings")]
+        [SerializeField] private float absoluteMaxSpeed = 100f;
         [SerializeField] private float groundedSpeed;
         [SerializeField] private float groundedAcceleration;
         [SerializeField] private float jumpSpeed;
@@ -46,15 +46,16 @@ namespace CharacterController
         [SerializeField] private float dashBufferTimeMax;
 
         [Header("Debug values")] 
-        [ReadOnly] 
-        [SerializeField]
+        
+        [ReadOnly, SerializeField]
         private float accelerationMagnitude;
-        [ReadOnly] 
-        [SerializeField]
+        [ReadOnly, SerializeField]
         private Vector3 accelerationVector;
-        [ReadOnly] 
-        [SerializeField]
+        [ReadOnly, SerializeField]
+        private float planarSpeed;
+        [ReadOnly, SerializeField]
         private PlayerState playerState;
+        
     
         //Private variables
         private Camera _mainCamera;
@@ -116,15 +117,15 @@ namespace CharacterController
             
             /* Character tilt */
             PerformTilt(ref currentRotation, deltaTime);
-            
-            characterVisual.rotation = currentRotation;
         }
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
         {
             /*TODO: _lastGroundVelocity is kinda just used for the last input direction,
              but is also used for calculating tilt, so probably needs to be refactored sometime*/
-        
+            
+            
+            
             //Variable Cache
             bool isStableOnGround = motor.GroundingStatus.IsStableOnGround;
             Vector3 cameraOrientedInput = GetCameraOrientedDirectionFromInput();
@@ -146,6 +147,9 @@ namespace CharacterController
                 {
                     var targetVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
                     currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * groundedAcceleration);
+                    
+                    float normalizedSpeed = currentVelocity.magnitude / groundedSpeed; 
+                    animator.SetFloat("Velocity", normalizedSpeed);
                 }
             }
             else
@@ -157,8 +161,14 @@ namespace CharacterController
                     var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
                     
                     var movementForce = planarMovement * (airControlStrength * deltaTime);
-
-                    if (currentPlanarVelocity.sqrMagnitude < maxAirSpeed * maxAirSpeed)
+                    if (playerState == PlayerState.Dashing)
+                    {
+                        //Apply drag
+                        var planarVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
+                        var targetVelocity = new Vector3(planarVelocity.x, currentVelocity.y, planarVelocity.z);
+                        currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashDrag);
+                    }
+                    else if (currentPlanarVelocity.sqrMagnitude < maxAirSpeed * maxAirSpeed)
                     {
                         var targetPlanarVelocity = currentPlanarVelocity + movementForce;
                     
@@ -195,6 +205,7 @@ namespace CharacterController
             }
 
             UpdatePlayerState(currentVelocity, isStableOnGround);
+            planarSpeed = new Vector3(currentVelocity.x, 0, currentVelocity.z).magnitude;
         }
 
         private void UpdatePlayerState(Vector3 currentVelocity, bool isStableOnGround)
@@ -281,7 +292,10 @@ namespace CharacterController
         {
             _dashCooldownTimer.Restart(dashCooldown);
             playerState = PlayerState.Dashing;
-            currentVelocity += _lastGroundDirection * dashSpeed;
+            
+            Vector3 planarGroundSpeed = new Vector3(_lastGroundDirection.x, 0, _lastGroundDirection.z);
+            
+            currentVelocity += planarGroundSpeed * dashSpeed;
         }
 
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
