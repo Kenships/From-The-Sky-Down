@@ -4,7 +4,7 @@ using UnityEngine.Serialization;
 
 namespace CharacterController
 {
-    [CreateAssetMenu(fileName = "InputEvents", menuName = "ScriptableObjects")]
+    [CreateAssetMenu(fileName = "InputEvents", menuName = "Character Controller Events/InputEvents")]
     public class InputEventsSO : ScriptableObject
     {
         public Vector2Variable inputDirection;

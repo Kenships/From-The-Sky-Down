@@ -19,7 +19,6 @@ namespace ImprovedTimers {
 
         public void Start() {
             CurrentTime = initialTime;
-            Debug.Log(CurrentTime);
             if (!IsRunning) {
                 IsRunning = true;
                 TimerManager.RegisterTimer(this);

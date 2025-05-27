@@ -24,7 +24,6 @@ namespace CharacterController
         [SerializeField] private Animator animator;
     
         [Header("Movement Settings")]
-        [SerializeField] private float absoluteMaxSpeed = 100f;
         [SerializeField] private float groundedSpeed;
         [SerializeField] private float groundedAcceleration;
         [SerializeField] private float jumpSpeed;
@@ -62,9 +61,11 @@ namespace CharacterController
     
         //Private variables
         private Camera _mainCamera;
-        private Vector3 _currentInputMovementDirectionNormalized;
+        private Vector3 _cartesianInputMovementDirectionNormalized;
+        private Vector3 _cameraOrientedInputDirectionNormalized;
         private Vector3 _lastGroundDirection;
         private Vector3 _lastGroundVelocity;
+        private bool _isGrounded;
     
         //Timers
         private CountdownTimer _cayoteTimer;
@@ -135,133 +136,39 @@ namespace CharacterController
         {
             /*TODO: _lastGroundVelocity is kinda just used for the last input direction,
              but is also used for calculating tilt, so probably needs to be refactored sometime*/
-            
-            
-            
             //Variable Cache
-            bool isStableOnGround = motor.GroundingStatus.IsStableOnGround;
-            Vector3 cameraOrientedInput = GetCameraOrientedDirectionFromInput();
-        
-            /* Movement Sequence */
-            _lastGroundVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-            if (isStableOnGround)
-            {
-                //Reset buffer timers
-                _cayoteTimer.Reset(cayoteTimeMax);
+            CacheVelocityUpdatePerams(currentVelocity);
 
-                if (playerState == PlayerState.Dashing)
-                {
-                    //Apply drag
-                    var targetVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
-                    currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashDrag);
-                }
-                else
-                {
-                    var targetVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
-                    currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * groundedAcceleration);
-                    
-                    float normalizedSpeed = currentVelocity.magnitude / groundedSpeed; 
-                    animator.SetFloat("Velocity", normalizedSpeed);
-                }
-            }
-            else
-            {
-                //In air control
-                if (cameraOrientedInput.sqrMagnitude > 0f)
-                {
-                    var planarMovement = Vector3.ProjectOnPlane(cameraOrientedInput, motor.CharacterUp) * cameraOrientedInput.magnitude;
-                    var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
-                    
-                    var movementForce = planarMovement * (airControlStrength * deltaTime);
-                    if (playerState == PlayerState.Dashing)
-                    {
-                        //Apply drag
-                        var planarVelocity = CalculateGroundMovementVelocityInDirection(cameraOrientedInput);
-                        var targetVelocity = new Vector3(planarVelocity.x, currentVelocity.y, planarVelocity.z);
-                        currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashDrag);
-                    }
-                    else if (currentPlanarVelocity.sqrMagnitude < maxAirSpeed * maxAirSpeed)
-                    {
-                        var targetPlanarVelocity = currentPlanarVelocity + movementForce;
-                    
-                        targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, maxAirSpeed);
-                        
-                        movementForce = targetPlanarVelocity - currentPlanarVelocity;
-                    }
-                    else if (Vector3.Dot(currentPlanarVelocity, movementForce) > 0f)
-                    {
-                        var constrainedMovementForce = Vector3.ProjectOnPlane(movementForce, currentPlanarVelocity.normalized);
-                        
-                        movementForce = constrainedMovementForce;
-                    }
-                    
-                    
-                    currentVelocity += movementForce;
-                }
-                //Apply Gravity
-                SimulateGravity(ref currentVelocity, deltaTime);
-            }
-        
+            /* Movement Sequence */
+            ApplyDirectionalMovement(ref currentVelocity, deltaTime);
             
             /* Jumping & dashing Sequence */
-            bool jumpThisFrame = _jumpRequested && (isStableOnGround || _cayoteTimer.IsRunning) && playerState != PlayerState.Dashing;
-            bool dashThisFrame = _dashRequested && isStableOnGround && playerState != PlayerState.Dashing;
-            bool bulletJumpThisFrame = _bulletJumpRequested && isStableOnGround && playerState != PlayerState.Dashing;
-
-            if (jumpThisFrame)
-            {
-                PerformJump(ref currentVelocity);
-            }
-            else if (dashThisFrame)
-            {
-                PerformDash(ref currentVelocity);
-            }           
-            else if (bulletJumpThisFrame)
-            {
-                PerformBulletJump(ref currentVelocity);
-            }
-
-            UpdatePlayerState(currentVelocity, isStableOnGround);
-            planarSpeed = new Vector3(currentVelocity.x, 0, currentVelocity.z).magnitude;
+            ApplyVelocityModifiers(ref currentVelocity);
         }
-
-        private void UpdatePlayerState(Vector3 currentVelocity, bool isStableOnGround)
-        {
-            switch (playerState)
-            {
-                case PlayerState.Jumping:
-                    if(currentVelocity.y < 0)
-                    {
-                        playerState = PlayerState.Falling;
-                    }
-                    break;
-                case PlayerState.Falling:
-                    if (isStableOnGround)
-                    {
-                        playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
-                    }
-
-                    break;
-                case PlayerState.Dashing:
-                    if (!_dashCooldownTimer.IsRunning)
-                    {
-                        playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
-                    }
-                    break;
-                default:
-                    playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
-                    break;
-            }
-        }
+        
 
         public void PostGroundingUpdate(float deltaTime)
         {
-        
+            //Reset Cayote Timer
+            if (motor.GroundingStatus.IsStableOnGround)
+            {
+                _cayoteTimer.Reset(cayoteTimeMax);
+            }
         }
 
         public void AfterCharacterUpdate(float deltaTime)
         {
-        
+            //Animation Adjustment
+            UpdateAnimations();
+
+            //UpdatePlayerState
+            UpdatePlayerState();
+        }
+        //TODO: Refactor animations to separate module
+        private void UpdateAnimations()
+        {
+            float normalizedSpeed = motor.BaseVelocity.sqrMagnitude / (groundedSpeed * groundedSpeed);
+            animator.SetFloat("Velocity", normalizedSpeed);
         }
 
         public bool IsColliderValidForCollisions(Collider coll)
@@ -290,9 +197,128 @@ namespace CharacterController
         {
         
         }
+        
+        #region Velocity Update Pipeline
+        private void ApplyVelocityModifiers(ref Vector3 currentVelocity)
+        {
+            bool jumpThisFrame = _jumpRequested && (_isGrounded || _cayoteTimer.IsRunning) && playerState != PlayerState.Dashing;
+            bool dashThisFrame = _dashRequested && _isGrounded && playerState != PlayerState.Dashing;
+            bool bulletJumpThisFrame = _bulletJumpRequested && _isGrounded && playerState != PlayerState.Dashing;
 
+            if (jumpThisFrame)
+            {
+                PerformJump(ref currentVelocity);
+            }
+            else if (dashThisFrame)
+            {
+                PerformDash(ref currentVelocity);
+            }           
+            else if (bulletJumpThisFrame)
+            {
+                PerformBulletJump(ref currentVelocity);
+            }
+        }
+
+        private void ApplyDirectionalMovement(ref Vector3 currentVelocity, float deltaTime)
+        {
+            if (_isGrounded)
+            {
+                PerformGroundMovement(ref currentVelocity, deltaTime);
+            }
+            else
+            {
+                //In air control
+                PerformAirMovement(ref currentVelocity, deltaTime);
+                //Apply Gravity
+                SimulateGravity(ref currentVelocity, deltaTime);
+            }
+        }
+
+        private void CacheVelocityUpdatePerams(Vector3 currentVelocity)
+        {
+            _isGrounded = motor.GroundingStatus.IsStableOnGround;
+            _cameraOrientedInputDirectionNormalized = GetCameraOrientedDirectionFromInput();
+            _lastGroundVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
+            planarSpeed = _lastGroundVelocity.magnitude;
+        }
+        #endregion
+        
         #region Player Actions
+        
+        //TODO: Refactor State Calculations into separate module
+        private void UpdatePlayerState()
+        {
+            Vector3 currentVelocity = motor.BaseVelocity;
+            
+            switch (playerState)
+            {
+                case PlayerState.Jumping:
+                    if(currentVelocity.y < 0)
+                    {
+                        playerState = PlayerState.Falling;
+                    }
+                    break;
+                case PlayerState.Falling:
+                    if (_isGrounded)
+                    {
 
+                        playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
+                    }
+
+                    break;
+                case PlayerState.Dashing:
+                    Debug.Log(_dashCooldownTimer.IsRunning);
+                    if (!_dashCooldownTimer.IsRunning)
+                    {
+                        playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
+                    }
+                    break;
+                default:
+                    playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
+                    break;
+            }
+        }
+        private void PerformGroundMovement(ref Vector3 currentVelocity, float deltaTime)
+        {
+           
+            var targetVelocity = CalculateGroundMovementVelocityInDirection(_cameraOrientedInputDirectionNormalized);
+            var transientDrag = playerState == PlayerState.Dashing ? dashDrag : groundedAcceleration;
+            currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * transientDrag);
+        }
+
+        private void PerformAirMovement(ref Vector3 currentVelocity, float deltaTime)
+        {
+            if (Mathf.Approximately(_cameraOrientedInputDirectionNormalized.sqrMagnitude, 0)) return;
+            
+            
+            var planarMovement = Vector3.ProjectOnPlane(_cameraOrientedInputDirectionNormalized, motor.CharacterUp) * _cameraOrientedInputDirectionNormalized.magnitude;
+            var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
+                    
+            var movementForce = planarMovement * (airControlStrength * deltaTime);
+            if (playerState == PlayerState.Dashing)
+            {
+                //Apply drag
+                var planarVelocity = CalculateGroundMovementVelocityInDirection(_cameraOrientedInputDirectionNormalized);
+                var targetVelocity = new Vector3(planarVelocity.x, currentVelocity.y, planarVelocity.z);
+                currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashDrag);
+            }
+            else if (currentPlanarVelocity.sqrMagnitude < maxAirSpeed * maxAirSpeed)
+            {
+                var targetPlanarVelocity = currentPlanarVelocity + movementForce;
+                    
+                targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, maxAirSpeed);
+                        
+                movementForce = targetPlanarVelocity - currentPlanarVelocity;
+            }
+            else if (Vector3.Dot(currentPlanarVelocity, movementForce) > 0f)
+            {
+                var constrainedMovementForce = Vector3.ProjectOnPlane(movementForce, currentPlanarVelocity.normalized);
+                        
+                movementForce = constrainedMovementForce;
+            }
+                    
+            currentVelocity += movementForce;
+        }
         private void PerformJump(ref Vector3 currentVelocity)
         {
             playerState = PlayerState.Jumping;
@@ -317,11 +343,9 @@ namespace CharacterController
 
         private void PerformBulletJump(ref Vector3 currentVelocity)
         {
-            playerState = PlayerState.Dashing;
-            
-            Vector3 cameraOrientedDirection = (_mainCamera.transform.forward + Vector3.up * 0.5f).normalized;
-            
-            currentVelocity += cameraOrientedDirection * bulletJumpSpeed;
+            //I used to have code here but it broke so now its just an mega jump dash
+            PerformDash(ref currentVelocity);
+            PerformJump(ref currentVelocity);
         }
 
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
@@ -357,8 +381,15 @@ namespace CharacterController
             
         }
         #endregion
-        #region Calculations
+       
+        #region Utilities
 
+        private Vector3 GetCameraOrientedDirectionFromInput()
+        {
+            float yaw = _mainCamera.transform.eulerAngles.y;
+            return Quaternion.Euler(0, yaw, 0) * _cartesianInputMovementDirectionNormalized;
+        }
+        
         private Vector3 CalculateGroundMovementVelocityInDirection(Vector3 cameraOrientedDirection)
         {
             if(!cameraOrientedDirection.Equals(Vector3.zero))
@@ -383,20 +414,13 @@ namespace CharacterController
         }
 
         #endregion
-        #region Utilities
-
-        private Vector3 GetCameraOrientedDirectionFromInput()
-        {
-            float yaw = _mainCamera.transform.eulerAngles.y;
-            return Quaternion.Euler(0, yaw, 0) * _currentInputMovementDirectionNormalized;
-        }
-
-        #endregion
+        
         #region Callback Functions
     
         private void SetCurrentMovementDirectionNormalized(Vector2 direction)
         {
-            _currentInputMovementDirectionNormalized = new Vector3(direction.x, 0, direction.y).normalized;
+            _cartesianInputMovementDirectionNormalized = new Vector3(direction.x, 0, direction.y).normalized;
+            _cameraOrientedInputDirectionNormalized = GetCameraOrientedDirectionFromInput();
         }
         private void RequestJump()
         {
