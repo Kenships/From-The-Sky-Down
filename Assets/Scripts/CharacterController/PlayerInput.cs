@@ -18,6 +18,7 @@ public class PlayerInput : MonoBehaviour
         inputSystem.Player.Move.canceled += SetDirection;
         inputSystem.Player.Jump.started += Jump;
         inputSystem.Player.Dash.started += Dash;
+        inputSystem.Player.BulletJump.started += BulletJump;
     }
 
     private void OnDisable()
@@ -26,6 +27,7 @@ public class PlayerInput : MonoBehaviour
         inputSystem.Player.Move.canceled -= SetDirection;
         inputSystem.Player.Jump.started -= Jump;
         inputSystem.Player.Dash.started -= Dash;
+        inputSystem.Player.BulletJump.started -= BulletJump;
 
         inputSystem.Player.Disable();
     }
@@ -38,6 +40,11 @@ public class PlayerInput : MonoBehaviour
     private void Jump(InputAction.CallbackContext obj)
     {
         inputEvents.jumpEvent.Raise();
+    }
+
+    private void BulletJump(InputAction.CallbackContext obj)
+    {
+        inputEvents.bulletJumpEvent.Raise();
     }
 
     private void SetDirection(InputAction.CallbackContext obj)

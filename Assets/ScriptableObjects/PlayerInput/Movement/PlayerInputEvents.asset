@@ -15,3 +15,4 @@ MonoBehaviour:
   inputDirection: {fileID: 11400000, guid: 58e3afb1a87f7144a9798028c39cf6a0, type: 2}
   jumpEvent: {fileID: 11400000, guid: 0aa4091578f784045a98b27bec7ad134, type: 2}
   dashEvent: {fileID: 11400000, guid: 987fc60172ca95b4ca21a4cb399c03f5, type: 2}
+  bulletJumpEvent: {fileID: 11400000, guid: 89e0e1e3863614e4a9542305f07e8a7c, type: 2}

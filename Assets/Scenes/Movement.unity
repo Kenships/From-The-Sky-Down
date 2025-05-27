@@ -380,8 +380,8 @@ Transform:
   m_GameObject: {fileID: 220490652}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000014901159, y: 0.7220854, z: -0, w: 0.69180393}
-  m_LocalPosition: {x: -3.64, y: 3.3, z: 10.79}
-  m_LocalScale: {x: 2.010001, y: 0.29999998, z: 9.690003}
+  m_LocalPosition: {x: -3.64, y: 1.4, z: 10.79}
+  m_LocalScale: {x: 2.010001, y: 4, z: 9.690003}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 224428045}
@@ -589,7 +589,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 499160488}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15046716, y: -0.0012681806, z: 0.0001930172, w: 0.9886142}
+  m_LocalRotation: {x: 0.15046713, y: -0.0014748705, z: 0.0002244754, w: 0.9886139}
   m_LocalPosition: {x: 0, y: 3.25, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1581,9 +1581,11 @@ MonoBehaviour:
   dashSpeed: 50
   dashDrag: 10
   dashCooldown: 0.4
+  bulletJumpSpeed: 20
   cayoteTimeMax: 0.15
   jumpBufferTimeMax: 0.2
   dashBufferTimeMax: 0.2
+  bulletJumpBufferTimeMax: 0.2
   accelerationMagnitude: 0
   accelerationVector: {x: 0, y: 0, z: 0}
   planarSpeed: 0
@@ -2121,7 +2123,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1698489397}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15046716, y: -0.0012681804, z: 0.00019301714, w: 0.9886142}
+  m_LocalRotation: {x: 0.15046711, y: -0.0014748703, z: 0.00022447537, w: 0.98861396}
   m_LocalPosition: {x: 0, y: 3.25, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

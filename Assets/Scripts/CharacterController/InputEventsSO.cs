@@ -10,5 +10,6 @@ namespace CharacterController
         public Vector2Variable inputDirection;
         public ScriptableEventNoParam jumpEvent;
         public ScriptableEventNoParam dashEvent;
+        public ScriptableEventNoParam bulletJumpEvent;
     }
 }

@@ -1,6 +1,7 @@
 using KinematicCharacterController;
 using UnityEngine;
 using Utilities;
+using ImprovedTimers;
 
 namespace CharacterController
 {
@@ -39,11 +40,13 @@ namespace CharacterController
         [SerializeField] private float dashSpeed;
         [SerializeField] private float dashDrag;
         [SerializeField] private float dashCooldown;
+        [SerializeField] private float bulletJumpSpeed;
 
         [Header("Timer Settings")] 
         [SerializeField] private float cayoteTimeMax;
         [SerializeField] private float jumpBufferTimeMax;
         [SerializeField] private float dashBufferTimeMax;
+        [SerializeField] private float bulletJumpBufferTimeMax;
 
         [Header("Debug values")] 
         
@@ -64,14 +67,17 @@ namespace CharacterController
         private Vector3 _lastGroundVelocity;
     
         //Timers
-        private Timer _cayoteTimer;
-        private Timer _jumpBufferTimer;
-        private Timer _dashBufferTimer;
-        private Timer _dashCooldownTimer;
+        private CountdownTimer _cayoteTimer;
+        private CountdownTimer _jumpBufferTimer;
+        private CountdownTimer _dashBufferTimer;
+        private CountdownTimer _bulletJumpBufferTimer;
+        private CountdownTimer _dashCooldownTimer;
+        private CountdownTimer _bulletJumpCooldownTimer;
     
         //requestFlags
         private bool _jumpRequested;
         private bool _dashRequested;
+        private bool _bulletJumpRequested;
      
         private void Awake()
         {
@@ -80,10 +86,11 @@ namespace CharacterController
             motor = gameObject.GetOrAdd<KinematicCharacterMotor>();
             motor.CharacterController = this;
             
-            _cayoteTimer = new Timer(cayoteTimeMax);
-            _jumpBufferTimer = new Timer(jumpBufferTimeMax);
-            _dashBufferTimer = new Timer(dashBufferTimeMax);
-            _dashCooldownTimer = new Timer(dashCooldown);
+            _cayoteTimer = new CountdownTimer(cayoteTimeMax);
+            _jumpBufferTimer = new CountdownTimer(jumpBufferTimeMax);
+            _dashBufferTimer = new CountdownTimer(dashBufferTimeMax);
+            _bulletJumpBufferTimer = new CountdownTimer(bulletJumpBufferTimeMax);
+            _dashCooldownTimer = new CountdownTimer(dashCooldown);
         }
 
         private void Start()
@@ -91,18 +98,23 @@ namespace CharacterController
             inputEvents.inputDirection.OnValueChanged += SetCurrentMovementDirectionNormalized;
             inputEvents.jumpEvent.OnRaised += RequestJump;
             inputEvents.dashEvent.OnRaised += RequestDash;
+            inputEvents.bulletJumpEvent.OnRaised += RequestBulletJump;
+
             _cayoteTimer.OnTimerEnd += RevokeJumpRequest;
             _jumpBufferTimer.OnTimerEnd += RevokeJumpRequest;
             _dashBufferTimer.OnTimerEnd += RevokeDashRequest;
+            _bulletJumpBufferTimer.OnTimerEnd += RevokeBulletJumpRequest;
         }
 
         public void BeforeCharacterUpdate(float deltaTime)
         {
             /* Update Timers */
-            _cayoteTimer.Tick(deltaTime);
-            _jumpBufferTimer.Tick(deltaTime);
-            _dashBufferTimer.Tick(deltaTime);
-            _dashCooldownTimer.Tick(deltaTime);
+            _cayoteTimer.Tick();
+            _jumpBufferTimer.Tick();
+            _dashBufferTimer.Tick();
+            _bulletJumpBufferTimer.Tick();
+
+            _dashCooldownTimer.Tick();
         }
         
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
@@ -135,7 +147,7 @@ namespace CharacterController
             if (isStableOnGround)
             {
                 //Reset buffer timers
-                _cayoteTimer.Restart(cayoteTimeMax);
+                _cayoteTimer.Reset(cayoteTimeMax);
 
                 if (playerState == PlayerState.Dashing)
                 {
@@ -194,6 +206,7 @@ namespace CharacterController
             /* Jumping & dashing Sequence */
             bool jumpThisFrame = _jumpRequested && (isStableOnGround || _cayoteTimer.IsRunning) && playerState != PlayerState.Dashing;
             bool dashThisFrame = _dashRequested && isStableOnGround && playerState != PlayerState.Dashing;
+            bool bulletJumpThisFrame = _bulletJumpRequested && isStableOnGround && playerState != PlayerState.Dashing;
 
             if (jumpThisFrame)
             {
@@ -202,6 +215,10 @@ namespace CharacterController
             else if (dashThisFrame)
             {
                 PerformDash(ref currentVelocity);
+            }           
+            else if (bulletJumpThisFrame)
+            {
+                PerformBulletJump(ref currentVelocity);
             }
 
             UpdatePlayerState(currentVelocity, isStableOnGround);
@@ -279,7 +296,7 @@ namespace CharacterController
         private void PerformJump(ref Vector3 currentVelocity)
         {
             playerState = PlayerState.Jumping;
-            _cayoteTimer.ForceEnd();
+            _cayoteTimer.Stop();
 
             motor.ForceUnground(time: 0f);
             var currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
@@ -290,12 +307,21 @@ namespace CharacterController
         
         private void PerformDash(ref Vector3 currentVelocity)
         {
-            _dashCooldownTimer.Restart(dashCooldown);
+            _dashCooldownTimer.Reset(dashCooldown);
             playerState = PlayerState.Dashing;
             
             Vector3 planarGroundSpeed = new Vector3(_lastGroundDirection.x, 0, _lastGroundDirection.z);
             
             currentVelocity += planarGroundSpeed * dashSpeed;
+        }
+
+        private void PerformBulletJump(ref Vector3 currentVelocity)
+        {
+            playerState = PlayerState.Dashing;
+            
+            Vector3 cameraOrientedDirection = (_mainCamera.transform.forward + Vector3.up * 0.5f).normalized;
+            
+            currentVelocity += cameraOrientedDirection * bulletJumpSpeed;
         }
 
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
@@ -374,7 +400,7 @@ namespace CharacterController
         }
         private void RequestJump()
         {
-            _jumpBufferTimer.Restart(jumpBufferTimeMax);
+            _jumpBufferTimer.Reset(jumpBufferTimeMax);
             _jumpRequested = true;
         }
         
@@ -385,7 +411,7 @@ namespace CharacterController
         
         private void RequestDash()
         {
-            _dashBufferTimer.Restart(dashBufferTimeMax);
+            _dashBufferTimer.Reset(dashBufferTimeMax);
             _dashRequested = true;
         }
         
@@ -393,6 +419,19 @@ namespace CharacterController
         {
             _dashRequested = false;
         }
+
+        private void RequestBulletJump()
+        {
+            _bulletJumpBufferTimer.Reset(bulletJumpBufferTimeMax);
+            _bulletJumpRequested = true;
+            
+        }
+
+        private void RevokeBulletJumpRequest()
+        {
+            _bulletJumpRequested = false;
+        }
+
         #endregion
     }
 }
