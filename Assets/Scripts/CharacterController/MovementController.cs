@@ -2,6 +2,7 @@ using KinematicCharacterController;
 using UnityEngine;
 using Utilities;
 using ImprovedTimers;
+using Obvious.Soap;
 
 namespace CharacterController
 {
@@ -46,24 +47,35 @@ namespace CharacterController
         [SerializeField] private float jumpBufferTimeMax;
         [SerializeField] private float dashBufferTimeMax;
         [SerializeField] private float bulletJumpBufferTimeMax;
-
+        
+        [Header("Persistant Variables")]
+        [SerializeField] private MotorInfoSO motorInfo;
+        [SerializeField] private PlayerStateSO playerStateSO;
+        
+        
         [Header("Debug values")] 
+        [ReadOnly, SerializeField] private float accelerationMagnitude;
+        [ReadOnly, SerializeField] private float planarSpeed;
+        [ReadOnly, SerializeField] private PlayerState playerState;
         
-        [ReadOnly, SerializeField]
-        private float accelerationMagnitude;
-        [ReadOnly, SerializeField]
-        private Vector3 accelerationVector;
-        [ReadOnly, SerializeField]
-        private float planarSpeed;
-        [ReadOnly, SerializeField]
-        private PlayerState playerState;
-        
+        //Public properties
+        public Vector3 LastVelocity
+        {
+            get => _lastVelocity;
+            private set
+            {
+                _lastVelocity = value;
+                _lastGroundVelocity = new Vector3(_lastVelocity.x, 0, _lastVelocity.z);
+                planarSpeed = _lastGroundVelocity.magnitude;
+            }
+        }
     
-        //Private variables
+        //Cache Variables
         private Camera _mainCamera;
         private Vector3 _cartesianInputMovementDirectionNormalized;
         private Vector3 _cameraOrientedInputDirectionNormalized;
         private Vector3 _lastGroundDirection;
+        private Vector3 _lastVelocity;
         private Vector3 _lastGroundVelocity;
         private bool _isGrounded;
     
@@ -109,27 +121,24 @@ namespace CharacterController
 
         public void BeforeCharacterUpdate(float deltaTime)
         {
-            /* Update Timers */
-            _cayoteTimer.Tick();
-            _jumpBufferTimer.Tick();
-            _dashBufferTimer.Tick();
-            _bulletJumpBufferTimer.Tick();
-
-            _dashCooldownTimer.Tick();
+            
         }
         
         public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
         {
             /* Character look rotation */
             
-            if (_lastGroundDirection.Equals(Vector3.zero)) return;
+            if (LastVelocity.Equals(Vector3.zero)) return;
             
             Quaternion targetRotation = Quaternion.LookRotation(_lastGroundDirection);
             currentRotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime*rotationSpeed);
             
+            /* perform Tilt */
             
-            /* Character tilt */
-            PerformTilt(ref currentRotation, deltaTime);
+            if (motor.GroundingStatus.IsStableOnGround)
+            {
+                PerformTilt(ref currentRotation, deltaTime);
+            }
         }
 
         public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -144,6 +153,12 @@ namespace CharacterController
             
             /* Jumping & dashing Sequence */
             ApplyVelocityModifiers(ref currentVelocity);
+            
+            //Update Persistant state variables
+            motorInfo.Acceleration = currentVelocity - LastVelocity;
+            
+            LastVelocity = currentVelocity;
+            accelerationMagnitude = motorInfo.Acceleration.magnitude;
         }
         
 
@@ -157,18 +172,9 @@ namespace CharacterController
         }
 
         public void AfterCharacterUpdate(float deltaTime)
-        {
-            //Animation Adjustment
-            UpdateAnimations();
-
+        { 
             //UpdatePlayerState
             UpdatePlayerState();
-        }
-        //TODO: Refactor animations to separate module
-        private void UpdateAnimations()
-        {
-            float normalizedSpeed = motor.BaseVelocity.sqrMagnitude / (groundedSpeed * groundedSpeed);
-            animator.SetFloat("Velocity", normalizedSpeed);
         }
 
         public bool IsColliderValidForCollisions(Collider coll)
@@ -238,8 +244,6 @@ namespace CharacterController
         {
             _isGrounded = motor.GroundingStatus.IsStableOnGround;
             _cameraOrientedInputDirectionNormalized = GetCameraOrientedDirectionFromInput();
-            _lastGroundVelocity = new Vector3(currentVelocity.x, 0, currentVelocity.z);
-            planarSpeed = _lastGroundVelocity.magnitude;
         }
         #endregion
         
@@ -261,13 +265,10 @@ namespace CharacterController
                 case PlayerState.Falling:
                     if (_isGrounded)
                     {
-
                         playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
                     }
-
                     break;
                 case PlayerState.Dashing:
-                    Debug.Log(_dashCooldownTimer.IsRunning);
                     if (!_dashCooldownTimer.IsRunning)
                     {
                         playerState = currentVelocity.AproxEquals(Vector3.zero) ? PlayerState.Idle : PlayerState.Running;
@@ -321,6 +322,7 @@ namespace CharacterController
         }
         private void PerformJump(ref Vector3 currentVelocity)
         {
+            animator.SetTrigger("Jump");
             playerState = PlayerState.Jumping;
             _cayoteTimer.Stop();
 
@@ -347,17 +349,14 @@ namespace CharacterController
             PerformDash(ref currentVelocity);
             PerformJump(ref currentVelocity);
         }
-
+        
         private void PerformTilt(ref Quaternion currentRotation, float deltaTime)
         {
             Vector3 motorVelocity = motor.BaseVelocity;
             
             Vector3 motorGroundVelocity = new Vector3(motorVelocity.x, 0, motorVelocity.z);
             
-            Vector3 accel = (motorGroundVelocity - _lastGroundVelocity) / deltaTime;
-
-            accelerationVector = accel;
-            accelerationMagnitude = accelerationVector.magnitude;
+            Vector3 accel = new Vector3(motorInfo.Acceleration.x, 0, motorInfo.Acceleration.z);
             
             Vector3 upWithLean = (Vector3.up + accel * accelerationTiltFactor).normalized;
             
@@ -374,12 +373,10 @@ namespace CharacterController
 
             if (angle > accelerationTiltDeadZone)
             {
-                float tiltSpeed = motor.GroundingStatus.IsStableOnGround ? accelerationTiltSpeed : accelerationTiltRecoverySpeed;
-                currentRotation = Quaternion.Slerp(currentRotation, targetRot, deltaTime * tiltSpeed);
+                currentRotation = Quaternion.Slerp(currentRotation, targetRot, deltaTime * accelerationTiltSpeed);
             }
-            
-            
         }
+
         #endregion
        
         #region Utilities
