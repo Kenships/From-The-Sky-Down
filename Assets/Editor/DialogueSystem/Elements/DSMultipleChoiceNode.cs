@@ -65,6 +65,13 @@ namespace DialogueSystem.Elements
             choicePort.userData = userData;
             
             DSChoiceSaveData choiceData = userData as DSChoiceSaveData;
+            
+            //if weighting is not initialized
+            if (choiceData.Weighting == 0)
+            {
+                choiceData.Weighting = 5;
+            }
+            
 
             Button deleteChoiceButton = DSElementsUtility.CreateButton("X", () =>
             {
