@@ -25,23 +25,18 @@ namespace CharacterController
         [SerializeField] private Animator animator;
     
         [Header("Movement Settings")]
-        [SerializeField] private float groundedSpeed;
-        [SerializeField] private float groundedAcceleration;
-        [SerializeField] private float jumpSpeed;
-        [SerializeField] private float airControlStrength;
-        [SerializeField] private float maxAirSpeed;
-        [SerializeField] private float gravity;
-        [SerializeField] private float initialJumpGravityMultiplier;
+        [SerializeField] MovementSettingsSO movementSettings;
+        [SerializeField] JumpSettingsSO jumpSettings;
+        [SerializeField] DashSettingsSO dashSettings;
+        
+        
+        [Header("Acceleration Tilt Settings")]
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float accelerationTiltSpeed;
         [SerializeField] private float accelerationTiltRecoverySpeed;
         [SerializeField] private float accelerationTiltDeadZone;
         [SerializeField] private float accelerationTiltFactor;
-        [SerializeField] private float dashSpeed;
-        [SerializeField] private float dashDrag;
-        [SerializeField] private float dashCooldown;
-        [SerializeField] private float bulletJumpSpeed;
-
+        
         [Header("Timer Settings")] 
         [SerializeField] private float cayoteTimeMax;
         [SerializeField] private float jumpBufferTimeMax;
@@ -50,8 +45,6 @@ namespace CharacterController
         
         [Header("Persistant Variables")]
         [SerializeField] private MotorInfoSO motorInfo;
-        [SerializeField] private PlayerStateSO playerStateSO;
-        
         
         [Header("Debug values")] 
         [ReadOnly, SerializeField] private float accelerationMagnitude;
@@ -103,7 +96,7 @@ namespace CharacterController
             _jumpBufferTimer = new CountdownTimer(jumpBufferTimeMax);
             _dashBufferTimer = new CountdownTimer(dashBufferTimeMax);
             _bulletJumpBufferTimer = new CountdownTimer(bulletJumpBufferTimeMax);
-            _dashCooldownTimer = new CountdownTimer(dashCooldown);
+            _dashCooldownTimer = new CountdownTimer(dashSettings.DashCooldown);
         }
 
         private void Start()
@@ -283,7 +276,9 @@ namespace CharacterController
         {
            
             var targetVelocity = CalculateGroundMovementVelocityInDirection(_cameraOrientedInputDirectionNormalized);
-            var transientDrag = playerState == PlayerState.Dashing ? dashDrag : groundedAcceleration;
+            var transientDrag = playerState == PlayerState.Dashing
+                ? dashSettings.DashDrag
+                : movementSettings.GroundedAcceleration; 
             currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * transientDrag);
         }
 
@@ -295,19 +290,19 @@ namespace CharacterController
             var planarMovement = Vector3.ProjectOnPlane(_cameraOrientedInputDirectionNormalized, motor.CharacterUp) * _cameraOrientedInputDirectionNormalized.magnitude;
             var currentPlanarVelocity = Vector3.ProjectOnPlane(currentVelocity, motor.CharacterUp);
                     
-            var movementForce = planarMovement * (airControlStrength * deltaTime);
+            var movementForce = planarMovement * (movementSettings.AirControlStrength * deltaTime);
             if (playerState == PlayerState.Dashing)
             {
                 //Apply drag
                 var planarVelocity = CalculateGroundMovementVelocityInDirection(_cameraOrientedInputDirectionNormalized);
                 var targetVelocity = new Vector3(planarVelocity.x, currentVelocity.y, planarVelocity.z);
-                currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashDrag);
+                currentVelocity = Vector3.Lerp(currentVelocity, targetVelocity, deltaTime * dashSettings.DashDrag);
             }
-            else if (currentPlanarVelocity.sqrMagnitude < maxAirSpeed * maxAirSpeed)
+            else if (currentPlanarVelocity.sqrMagnitude < movementSettings.MaxAirSpeed * movementSettings.MaxAirSpeed)
             {
                 var targetPlanarVelocity = currentPlanarVelocity + movementForce;
                     
-                targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, maxAirSpeed);
+                targetPlanarVelocity = Vector3.ClampMagnitude(targetPlanarVelocity, movementSettings.MaxAirSpeed);
                         
                 movementForce = targetPlanarVelocity - currentPlanarVelocity;
             }
@@ -322,25 +317,24 @@ namespace CharacterController
         }
         private void PerformJump(ref Vector3 currentVelocity)
         {
-            animator.SetTrigger("Jump");
             playerState = PlayerState.Jumping;
             _cayoteTimer.Stop();
 
             motor.ForceUnground(time: 0f);
             var currentVerticalSpeed = Vector3.Dot(currentVelocity, motor.CharacterUp);
-            var targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSpeed);
+            var targetVerticalSpeed = Mathf.Max(currentVerticalSpeed, jumpSettings.JumpSpeed);
             
             currentVelocity += motor.CharacterUp * (targetVerticalSpeed - currentVerticalSpeed);
         }
         
         private void PerformDash(ref Vector3 currentVelocity)
         {
-            _dashCooldownTimer.Reset(dashCooldown);
+            _dashCooldownTimer.Reset(dashSettings.DashCooldown);
             playerState = PlayerState.Dashing;
             
             Vector3 planarGroundSpeed = new Vector3(_lastGroundDirection.x, 0, _lastGroundDirection.z);
             
-            currentVelocity += planarGroundSpeed * dashSpeed;
+            currentVelocity += planarGroundSpeed * dashSettings.DashSpeed;
         }
 
         private void PerformBulletJump(ref Vector3 currentVelocity)
@@ -393,7 +387,7 @@ namespace CharacterController
                 _lastGroundDirection = cameraOrientedDirection;
             
             var groundedMovement = motor.GetDirectionTangentToSurface(cameraOrientedDirection.normalized, motor.GroundingStatus.GroundNormal);
-            var targetVelocity = groundedMovement * groundedSpeed;
+            var targetVelocity = groundedMovement * movementSettings.GroundedSpeed;
 
             return targetVelocity;
         }
@@ -402,11 +396,11 @@ namespace CharacterController
         {
             if (currentVelocity.y > 0)
             {
-                currentVelocity += motor.CharacterUp * (gravity * initialJumpGravityMultiplier * deltaTime);
+                currentVelocity += Vector3.up * (jumpSettings.FreefallGravity * jumpSettings.InitialJumpGravityMultiplier * deltaTime);
             }
             else
             {
-                currentVelocity += motor.CharacterUp * (gravity * deltaTime);
+                currentVelocity += Vector3.up  * (jumpSettings.FreefallGravity * deltaTime);
             }
         }
 

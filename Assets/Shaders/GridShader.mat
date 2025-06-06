@@ -38,11 +38,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _2nd_Tiling: 1000
+    - _2nd_Tiling: 200
     - _QueueControl: 0
     - _QueueOffset: 0
     - _TileScale: 0.95
-    - _Tiling: 500
+    - _Tiling: 100
     m_Colors:
     - _TileColor: {r: 0.35849056, g: 0.35849056, b: 0.35849056, a: 1}
   m_BuildTextureStacks: []
