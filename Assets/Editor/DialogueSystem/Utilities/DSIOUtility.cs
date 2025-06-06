@@ -319,7 +319,7 @@ namespace DialogueSystem.Utilities
                 dialogueContainer.UngroupedDialogues.Add(dialogue);
             }
             
-            dialogue.Initialize(node.DialogueName, node.Text, ConvertNodeChoicesToDialogueChoices(node.Choices), node.DialogueType, node.IsStartNode());
+            dialogue.Initialize(node.DialogueName, node.SpeakerName, node.ListenerName, node.Text, ConvertNodeChoicesToDialogueChoices(node.Choices), node.DialogueType, node.IsStartNode());
             
             createdDialogues.Add(node.ID, dialogue);
             

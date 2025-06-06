@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using DialogueSystem.Enumerations;
 using DialogueSystem.ScriptableObjects;
+using Obvious.Soap;
 using UnityEngine;
 namespace DialogueSystem
 {
@@ -19,5 +22,7 @@ namespace DialogueSystem
         
         [SerializeField] private int _selectedDialogueGroupIndex;
         [SerializeField] private int _selectedDialogueIndex;
+        
+        public DSDialogueSO StartingDialogue => _dialogue;
     }
 }

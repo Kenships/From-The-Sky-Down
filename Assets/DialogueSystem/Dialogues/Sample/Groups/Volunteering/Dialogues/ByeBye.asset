@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: ByeBye
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: ByeBye
+  <SpeakerName>k__BackingField: Kenneth
+  <ListenerName>k__BackingField: Worker
   <Text>k__BackingField: "Good night I will go sleep now. \nDON'T STOP WORKING UNDER
     ANY CONDITIONS!\nIN CASE OF FIRE MAKE SURE TO COMMIT, PUSH THEN LEAVE THE BUILDING!"
   <Choices>k__BackingField:

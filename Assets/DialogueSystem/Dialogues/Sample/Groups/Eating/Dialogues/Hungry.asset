@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Hungry
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: Hungry
+  <SpeakerName>k__BackingField: Chef
+  <ListenerName>k__BackingField: Worker
   <Text>k__BackingField: 'Nothing Seriously?
 
     Okay fine stay hungry then >:l'

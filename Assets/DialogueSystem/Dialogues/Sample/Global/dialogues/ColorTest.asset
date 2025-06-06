@@ -13,34 +13,37 @@ MonoBehaviour:
   m_Name: ColorTest
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: ColorTest
-  <Text>k__BackingField: Dialogue Text.
+  <SpeakerName>k__BackingField: Rainbow
+  <ListenerName>k__BackingField: Weighting
+  <Text>k__BackingField: This is a Display of the colour spectra. You Can't really
+    see it from the game but Hey.
   <Choices>k__BackingField:
-  - <Text>k__BackingField: New Choice
+  - <Text>k__BackingField: One
     <Weighting>k__BackingField: 1
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Two
     <Weighting>k__BackingField: 2
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Three
     <Weighting>k__BackingField: 3
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Four
     <Weighting>k__BackingField: 4
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Five
     <Weighting>k__BackingField: 5
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Six
     <Weighting>k__BackingField: 6
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Seven
     <Weighting>k__BackingField: 7
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Eight
     <Weighting>k__BackingField: 8
-    <NextDialogue>k__BackingField: {fileID: 0}
-  - <Text>k__BackingField: New Choice
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
+  - <Text>k__BackingField: Nine
     <Weighting>k__BackingField: 9
-    <NextDialogue>k__BackingField: {fileID: 0}
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: 4490fe67465b4ee428f878dd129566f5, type: 2}
   <DialogueType>k__BackingField: 1
   <IsStartingDialogue>k__BackingField: 1

@@ -95,6 +95,22 @@ namespace DialogueSystem.Inspectors
             DrawDialogueArea(dialogueNames, dialogueFolderPath);
 
             serializedObject.ApplyModifiedProperties();
+            
+            EditorGUI.BeginChangeCheck();
+            DrawPropertiesExcluding(serializedObject, 
+                "_dialogueContainer",
+                "_dialogueGroup",
+                "_dialogue",
+                "_groupedDialogues",
+                "_startingDialoguesOnly",
+                "_selectedDialogueGroupIndex",
+                "_selectedDialogueIndex"
+            );
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+            }
+
         }
 
         

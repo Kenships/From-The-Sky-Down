@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: StartNode
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: StartNode
+  <SpeakerName>k__BackingField: Kenneth
+  <ListenerName>k__BackingField: Worker
   <Text>k__BackingField: What do you want to do today?
   <Choices>k__BackingField:
   - <Text>k__BackingField: Eat!

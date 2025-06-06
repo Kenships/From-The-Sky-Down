@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Transition
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: Transition
+  <SpeakerName>k__BackingField: Kenneth
+  <ListenerName>k__BackingField: Worker
   <Text>k__BackingField: Well break time is over now
   <Choices>k__BackingField:
   - <Text>k__BackingField: Next Dialogue

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Work
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: Work
+  <SpeakerName>k__BackingField: Kenenth
+  <ListenerName>k__BackingField: Worker
   <Text>k__BackingField: Your shift starts now your shift is 24/7 52 weeks per year
   <Choices>k__BackingField:
   - <Text>k__BackingField: Next Dialogue

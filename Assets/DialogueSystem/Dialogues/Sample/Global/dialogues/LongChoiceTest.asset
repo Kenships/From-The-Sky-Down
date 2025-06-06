@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec6e7a9e2934e3b97ca448122c8535f, type: 3}
+  m_Name: LongChoiceTest
+  m_EditorClassIdentifier: 
+  <DialogueName>k__BackingField: LongChoiceTest
+  <SpeakerName>k__BackingField: Super Long Choices
+  <ListenerName>k__BackingField: You
+  <Text>k__BackingField: There is really nothing to read here lol
+  <Choices>k__BackingField:
+  - <Text>k__BackingField: This is a very VERY long choice. If you decide to choose
+      this choice then it might overflow and end up being longer than you would expect
+      it to be just for reference a normal length reply is about the length of the
+      choice below this one!
+    <Weighting>k__BackingField: 5
+    <NextDialogue>k__BackingField: {fileID: 0}
+  - <Text>k__BackingField: Regular choice size. Would you look at that!
+    <Weighting>k__BackingField: 5
+    <NextDialogue>k__BackingField: {fileID: 0}
+  <DialogueType>k__BackingField: 1
+  <IsStartingDialogue>k__BackingField: 0

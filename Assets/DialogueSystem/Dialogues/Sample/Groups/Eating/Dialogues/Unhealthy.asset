@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Unhealthy
   m_EditorClassIdentifier: 
   <DialogueName>k__BackingField: Unhealthy
+  <SpeakerName>k__BackingField: Chef
+  <ListenerName>k__BackingField: Worker
   <Text>k__BackingField: 'Wow thats really unhealthy!
 
 
