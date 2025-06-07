@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b452f9ba3198c9c48a0347fca87eabe9, type: 3}
+  m_Name: kanak_test_oneGraph
+  m_EditorClassIdentifier: 
+  <FileName>k__BackingField: kanak_test_one
+  <Groups>k__BackingField: []
+  <Nodes>k__BackingField:
+  - <NodeID>k__BackingField: 03d6c781-8baf-4f04-981d-ea9d4dd99181
+    <Name>k__BackingField: start
+    <SpeakerName>k__BackingField: you
+    <ListenerName>k__BackingField: them
+    <Text>k__BackingField: 'i am kanak
+
+'
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
+      <NodeID>k__BackingField: 1da1586d-4edd-46c5-a8aa-09194d6fdc7c
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 0
+    <Position>k__BackingField: {x: 1390, y: 124}
+  - <NodeID>k__BackingField: 1da1586d-4edd-46c5-a8aa-09194d6fdc7c
+    <Name>k__BackingField: then
+    <SpeakerName>k__BackingField: you
+    <ListenerName>k__BackingField: them
+    <Text>k__BackingField: you are?.
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: eunice
+      <Weighting>k__BackingField: 5
+      <NodeID>k__BackingField: bd61c828-ec70-4b6f-8007-57e518bc1123
+    - <Text>k__BackingField: ken
+      <Weighting>k__BackingField: 5
+      <NodeID>k__BackingField: 
+    - <Text>k__BackingField: khan
+      <Weighting>k__BackingField: 5
+      <NodeID>k__BackingField: 
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 1
+    <Position>k__BackingField: {x: 1834, y: 108}
+  - <NodeID>k__BackingField: bd61c828-ec70-4b6f-8007-57e518bc1123
+    <Name>k__BackingField: ken
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
+    <Text>k__BackingField: i is ken
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
+      <NodeID>k__BackingField: 
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 0
+    <Position>k__BackingField: {x: 2317, y: 64}
+  <OldGroupNames>k__BackingField:
+  - start
+  - then
+  - ken
+  <OldUngroupedNames>k__BackingField: []
+  <OldGroupedNodeNames>k__BackingField:
+    _serializedList: []

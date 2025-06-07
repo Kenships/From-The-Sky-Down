@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec6e7a9e2934e3b97ca448122c8535f, type: 3}
+  m_Name: start
+  m_EditorClassIdentifier: 
+  <DialogueName>k__BackingField: start
+  <SpeakerName>k__BackingField: you
+  <ListenerName>k__BackingField: them
+  <Text>k__BackingField: 'i am kanak
+
+'
+  <Choices>k__BackingField:
+  - <Text>k__BackingField: Next Dialogue
+    <Weighting>k__BackingField: 0
+    <NextDialogue>k__BackingField: {fileID: 11400000, guid: b9e59a84602c46a4e9d8ccd1ec7496bc, type: 2}
+  <DialogueType>k__BackingField: 0
+  <IsStartingDialogue>k__BackingField: 1
