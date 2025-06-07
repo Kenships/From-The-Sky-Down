@@ -29,6 +29,18 @@ MonoBehaviour:
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 0
     <Position>k__BackingField: {x: 1390, y: 124}
+  - <NodeID>k__BackingField: bd61c828-ec70-4b6f-8007-57e518bc1123
+    <Name>k__BackingField: ken
+    <SpeakerName>k__BackingField: 
+    <ListenerName>k__BackingField: 
+    <Text>k__BackingField: i is ken
+    <Choices>k__BackingField:
+    - <Text>k__BackingField: Next Dialogue
+      <Weighting>k__BackingField: 0
+      <NodeID>k__BackingField: 29eec0ad-34e4-47dd-909c-1fb98999cc90
+    <GroupID>k__BackingField: 
+    <DialogueType>k__BackingField: 0
+    <Position>k__BackingField: {x: 2317, y: 64}
   - <NodeID>k__BackingField: 1da1586d-4edd-46c5-a8aa-09194d6fdc7c
     <Name>k__BackingField: then
     <SpeakerName>k__BackingField: you
@@ -47,22 +59,23 @@ MonoBehaviour:
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 1
     <Position>k__BackingField: {x: 1834, y: 108}
-  - <NodeID>k__BackingField: bd61c828-ec70-4b6f-8007-57e518bc1123
-    <Name>k__BackingField: ken
+  - <NodeID>k__BackingField: 29eec0ad-34e4-47dd-909c-1fb98999cc90
+    <Name>k__BackingField: eunice
     <SpeakerName>k__BackingField: 
     <ListenerName>k__BackingField: 
-    <Text>k__BackingField: i is ken
+    <Text>k__BackingField: i is eunice
     <Choices>k__BackingField:
     - <Text>k__BackingField: Next Dialogue
       <Weighting>k__BackingField: 0
       <NodeID>k__BackingField: 
     <GroupID>k__BackingField: 
     <DialogueType>k__BackingField: 0
-    <Position>k__BackingField: {x: 2317, y: 64}
+    <Position>k__BackingField: {x: 2351, y: 338}
   <OldGroupNames>k__BackingField:
   - start
-  - then
   - ken
+  - then
+  - eunice
   <OldUngroupedNames>k__BackingField: []
   <OldGroupedNodeNames>k__BackingField:
     _serializedList: []

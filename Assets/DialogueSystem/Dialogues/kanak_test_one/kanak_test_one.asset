@@ -17,5 +17,6 @@ MonoBehaviour:
     _serializedList: []
   <UngroupedDialogues>k__BackingField:
   - {fileID: 11400000, guid: 42defe45043623f4db4e485563d2221e, type: 2}
-  - {fileID: 11400000, guid: b9e59a84602c46a4e9d8ccd1ec7496bc, type: 2}
   - {fileID: 11400000, guid: 5fcccc9c1fc4cde46b769a1f7ad37ea4, type: 2}
+  - {fileID: 11400000, guid: b9e59a84602c46a4e9d8ccd1ec7496bc, type: 2}
+  - {fileID: 11400000, guid: e1185e35c51d7904e8b9cfbdb044db81, type: 2}

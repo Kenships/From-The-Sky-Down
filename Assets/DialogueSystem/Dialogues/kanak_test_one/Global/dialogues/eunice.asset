@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eec6e7a9e2934e3b97ca448122c8535f, type: 3}
-  m_Name: ken
+  m_Name: eunice
   m_EditorClassIdentifier: 
-  <DialogueName>k__BackingField: ken
+  <DialogueName>k__BackingField: eunice
   <SpeakerName>k__BackingField: 
   <ListenerName>k__BackingField: 
-  <Text>k__BackingField: i is ken
+  <Text>k__BackingField: i is eunice
   <Choices>k__BackingField:
   - <Text>k__BackingField: Next Dialogue
     <Weighting>k__BackingField: 0
-    <NextDialogue>k__BackingField: {fileID: 11400000, guid: e1185e35c51d7904e8b9cfbdb044db81, type: 2}
+    <NextDialogue>k__BackingField: {fileID: 0}
   <DialogueType>k__BackingField: 0
   <IsStartingDialogue>k__BackingField: 0
