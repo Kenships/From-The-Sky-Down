@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fa17a0b0b2048f1a98d42b8e60364b1, type: 3}
-  m_Name: PlayerDashSettings
+  m_Script: {fileID: 11500000, guid: a49b7e678b3ebb7418adb84806d24646, type: 3}
+  m_Name: toggleActionMapChange
   m_EditorClassIdentifier: 
-  <DashSpeed>k__BackingField: 50
-  <DashDrag>k__BackingField: 10
-  <DashCooldown>k__BackingField: 0.4
-  <BulletJumpSpeed>k__BackingField: 20
+  TagIndex: 0
+  Description: 
+  _debugLogEnabled: 0

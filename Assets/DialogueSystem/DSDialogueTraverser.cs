@@ -4,6 +4,7 @@ using DialogueSystem.Data;
 using DialogueSystem.Enumerations;
 using DialogueSystem.ScriptableObjects;
 using Obvious.Soap;
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

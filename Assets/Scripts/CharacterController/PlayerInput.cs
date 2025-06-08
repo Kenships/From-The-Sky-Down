@@ -1,35 +1,61 @@
 using System;
 using CharacterController;
 using Obvious.Soap;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerInput : MonoBehaviour
 {
     [SerializeField] private InputEventsSO inputEvents;
-    private InputSystem_Actions inputSystem;
+    private InputSystem_Actions _inputSystem;
+    [SerializeField] private ScriptableEventNoParam toggleActionMapChange;
+    [SerializeField] private ScriptableEventNoParam requestNextDialogue;
+    [ReadOnly, SerializeField] private string currentActionMap;
     
 
     private void OnEnable()
     {
-        inputSystem = new InputSystem_Actions();
-        inputSystem.Player.Enable();
+        _inputSystem = new InputSystem_Actions();
+        _inputSystem.Player.Enable();
+        currentActionMap = _inputSystem.Player.ToString();
 
-        inputSystem.Player.Move.performed += SetDirection;
-        inputSystem.Player.Move.canceled += SetDirection;
-        inputSystem.Player.Jump.started += Jump;
-        inputSystem.Player.Dash.started += Dash;
-        inputSystem.Player.BulletJump.started += BulletJump;
+        toggleActionMapChange.OnRaised += ToggleActionMapChange;
+        
+        _inputSystem.UI.Click.performed += _ => requestNextDialogue.Raise();
+        _inputSystem.UI.Submit.performed += _ => requestNextDialogue.Raise();
+
+        _inputSystem.Player.Move.performed += SetDirection;
+        _inputSystem.Player.Move.canceled += SetDirection;
+        _inputSystem.Player.Jump.started += Jump;
+        _inputSystem.Player.Dash.started += Dash;
+        _inputSystem.Player.BulletJump.started += BulletJump;
     }
 
     private void OnDisable()
     {
-        inputSystem.Player.Move.performed -= SetDirection;
-        inputSystem.Player.Move.canceled -= SetDirection;
-        inputSystem.Player.Jump.started -= Jump;
-        inputSystem.Player.Dash.started -= Dash;
-        inputSystem.Player.BulletJump.started -= BulletJump;
+        _inputSystem.Player.Move.performed -= SetDirection;
+        _inputSystem.Player.Move.canceled -= SetDirection;
+        _inputSystem.Player.Jump.started -= Jump;
+        _inputSystem.Player.Dash.started -= Dash;
+        _inputSystem.Player.BulletJump.started -= BulletJump;
 
-        inputSystem.Player.Disable();
+        _inputSystem.Player.Disable();
+    }
+    
+    private void ToggleActionMapChange()
+    {
+        if (_inputSystem.Player.enabled)
+        {
+            _inputSystem.Player.Disable();
+            _inputSystem.UI.Enable();
+            currentActionMap = _inputSystem.UI.ToString();
+        }
+        else
+        {
+            _inputSystem.UI.Disable();
+            _inputSystem.Player.Enable();
+            currentActionMap = _inputSystem.Player.ToString();
+        }
     }
 
     private void Dash(InputAction.CallbackContext obj)

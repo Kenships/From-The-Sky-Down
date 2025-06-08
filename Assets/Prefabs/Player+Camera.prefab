@@ -85,6 +85,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputEvents: {fileID: 11400000, guid: 0b954dd1e2310cc4e8012d97df98fb23, type: 2}
+  toggleActionMapChange: {fileID: 11400000, guid: 8ab7a4487008de240a5495bd8ea67497, type: 2}
+  requestNextDialogue: {fileID: 11400000, guid: e13bdc9d4f7da1248b9c78f31051355f, type: 2}
+  currentActionMap: 
 --- !u!136 &601586447116704876
 CapsuleCollider:
   m_ObjectHideFlags: 8

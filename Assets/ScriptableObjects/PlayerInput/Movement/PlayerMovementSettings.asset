@@ -12,19 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e12ead1a024f478e7e2b42708e6049, type: 3}
   m_Name: PlayerMovementSettings
   m_EditorClassIdentifier: 
-  <GroundedSpeed>k__BackingField: 0
-  <GroundedAcceleration>k__BackingField: 0
-  <JumpSpeed>k__BackingField: 0
-  <AirControlStrength>k__BackingField: 0
-  <MaxAirSpeed>k__BackingField: 0
-  <Gravity>k__BackingField: 0
-  <InitialJumpGravityMultiplier>k__BackingField: 0
-  <RotationSpeed>k__BackingField: 0
-  <AccelerationTiltSpeed>k__BackingField: 0
-  <AccelerationTiltRecoverySpeed>k__BackingField: 0
-  <AccelerationTiltDeadZone>k__BackingField: 0
-  <AccelerationTiltFactor>k__BackingField: 0
-  <DashSpeed>k__BackingField: 0
-  <DashDrag>k__BackingField: 0
-  <DashCooldown>k__BackingField: 0
-  <BulletJumpSpeed>k__BackingField: 0
+  <GroundedSpeed>k__BackingField: 15
+  <GroundedAcceleration>k__BackingField: 6
+  <AirControlStrength>k__BackingField: 70
+  <MaxAirSpeed>k__BackingField: 12
