@@ -1,8 +1,11 @@
+using System;
+using DefaultNamespace;
 using KinematicCharacterController;
 using UnityEngine;
 using Utilities;
 using ImprovedTimers;
 using Obvious.Soap;
+using UnityEngine.Serialization;
 
 namespace CharacterController
 {
@@ -16,8 +19,9 @@ namespace CharacterController
     }
     public class MovementController : MonoBehaviour, ICharacterController
     {
+        [FormerlySerializedAs("playerInputReader")]
         [Header("Input References")]
-        [SerializeField] private InputEventsSO inputEvents;
+        [SerializeField] private InputReaderSO inputReader;
     
         [Header("Other References")]
         [SerializeField] private KinematicCharacterMotor motor;
@@ -99,17 +103,44 @@ namespace CharacterController
             _dashCooldownTimer = new CountdownTimer(dashSettings.DashCooldown);
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            inputEvents.inputDirection.OnValueChanged += SetCurrentMovementDirectionNormalized;
-            inputEvents.jumpEvent.OnRaised += RequestJump;
-            inputEvents.dashEvent.OnRaised += RequestDash;
-            inputEvents.bulletJumpEvent.OnRaised += RequestBulletJump;
-
+            //TODO: Interact should be in a separate module
+            inputReader.RequestInteract += () =>
+            {
+                Collider[] buffer = new Collider[32];
+                int count = Physics.OverlapSphereNonAlloc(transform.position, 3f, buffer);
+                for (int i = 0; i < count; i++)
+                {
+                    Collider c = buffer[i];
+                    if (c.TryGetComponent(out InteractObject interactObject))
+                    {
+                        interactObject.Interact();
+                    }
+                }
+            };
+            inputReader.RequestInputDirection += SetCurrentMovementDirectionNormalized;
+            inputReader.RequestJump += RequestJump;
+            inputReader.RequestDash += RequestDash;
+            inputReader.RequestBulletJump += RequestBulletJump;
+            
             _cayoteTimer.OnTimerEnd += RevokeJumpRequest;
             _jumpBufferTimer.OnTimerEnd += RevokeJumpRequest;
             _dashBufferTimer.OnTimerEnd += RevokeDashRequest;
             _bulletJumpBufferTimer.OnTimerEnd += RevokeBulletJumpRequest;
+        }
+
+        private void OnDisable()
+        {
+            inputReader.RequestInputDirection -= SetCurrentMovementDirectionNormalized;
+            inputReader.RequestJump -= RequestJump;
+            inputReader.RequestDash -= RequestDash;
+            inputReader.RequestBulletJump -= RequestBulletJump;
+            
+            _cayoteTimer.OnTimerEnd -= RevokeJumpRequest;
+            _jumpBufferTimer.OnTimerEnd -= RevokeJumpRequest;
+            _dashBufferTimer.OnTimerEnd -= RevokeDashRequest;
+            _bulletJumpBufferTimer.OnTimerEnd -= RevokeBulletJumpRequest;
         }
 
         public void BeforeCharacterUpdate(float deltaTime)

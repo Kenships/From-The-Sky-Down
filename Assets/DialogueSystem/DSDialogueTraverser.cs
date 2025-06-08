@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using CharacterController;
 using DialogueSystem.Data;
 using DialogueSystem.Enumerations;
 using DialogueSystem.ScriptableObjects;
 using Obvious.Soap;
-using PrimeTween;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +19,11 @@ namespace DialogueSystem
             get => _currentDialogue;
             set
             {
-                if (!value) return;
+                if (!value)
+                {
+                    Destroy(gameObject);
+                    return;
+                }
                 
                 _currentDialogue = value;
                 UpdateDialogueDisplay();
@@ -32,18 +36,38 @@ namespace DialogueSystem
         [SerializeField] private GameObject choiceButtonPrefab;
         [SerializeField] private TextMeshProUGUI speakerName;
         [SerializeField] private TextMeshProUGUI dialogueText;
-        [SerializeField] private ScriptableEventNoParam requestNextDialogue;
-        public void Start()
+        [SerializeField] private InputReaderSO inputReader;
+
+        private bool _firstUpdate;
+        public void OnEnable()
         {
-            requestNextDialogue.OnRaised += GetNextDialogue;
+            inputReader.SetInputState(InputState.Dialogue);
+            inputReader.RequestNextDialogue += GetNextDialogue;
             
             var dialogueSelector = GetComponent<DSDialogue>();
             CurrentDialogue = dialogueSelector.StartingDialogue;
+            
+            _firstUpdate = true;
+        }
+
+        private void Update()
+        {
+            if (_firstUpdate)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(choiceContainer.GetComponent<RectTransform>());
+                _firstUpdate = false;
+            }
+        }
+
+        public void OnDisable()
+        {
+            inputReader.SetInputState(InputState.Any);
+            inputReader.RequestNextDialogue -= GetNextDialogue;
         }
 
         private void GetNextDialogue()
         {
-            if (CurrentDialogue.DialogueType == DSDialogueType.MultipleChoice || CurrentDialogue.Choices.Count == 0) return;
+            if (CurrentDialogue.DialogueType == DSDialogueType.MultipleChoice) return;
 
             CurrentDialogue = CurrentDialogue.Choices[0].NextDialogue;
         }

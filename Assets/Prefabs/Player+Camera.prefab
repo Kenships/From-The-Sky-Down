@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3208993213183967201}
   - component: {fileID: 3958773460376498545}
-  - component: {fileID: 3607254002557201648}
   - component: {fileID: 601586447116704876}
   - component: {fileID: 8972970338809980727}
   - component: {fileID: 657481097677611237}
@@ -53,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7f09ab0214098f46ac3231e12986bc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputEvents: {fileID: 11400000, guid: 0b954dd1e2310cc4e8012d97df98fb23, type: 2}
+  inputReader: {fileID: 11400000, guid: 4b05685e332b17b49a8987b779e514cd, type: 2}
   motor: {fileID: 8972970338809980727}
   animator: {fileID: 4326865620765896173}
   movementSettings: {fileID: 11400000, guid: 41761ebdd8aac964d93a1da176b6ffda, type: 2}
@@ -72,22 +71,6 @@ MonoBehaviour:
   accelerationMagnitude: 0
   planarSpeed: 0
   playerState: 0
---- !u!114 &3607254002557201648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8758674089215334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5036a08ea8110fa44ae0ba19b7a8373b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputEvents: {fileID: 11400000, guid: 0b954dd1e2310cc4e8012d97df98fb23, type: 2}
-  toggleActionMapChange: {fileID: 11400000, guid: 8ab7a4487008de240a5495bd8ea67497, type: 2}
-  requestNextDialogue: {fileID: 11400000, guid: e13bdc9d4f7da1248b9c78f31051355f, type: 2}
-  currentActionMap: 
 --- !u!136 &601586447116704876
 CapsuleCollider:
   m_ObjectHideFlags: 8
