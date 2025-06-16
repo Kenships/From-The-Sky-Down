@@ -64,7 +64,7 @@ Transform:
   m_GameObject: {fileID: 8253062811810815700}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22404534, y: -0.001250175, z: 0.0002874022, w: 0.97457796}
-  m_LocalPosition: {x: 0, y: 3.547, z: -5}
+  m_LocalPosition: {x: 0, y: 3.671, z: -5.027}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -128,7 +128,7 @@ MonoBehaviour:
   TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 0.5, z: 0.2}
+    PositionDamping: {x: 1, y: 0.3, z: 0.2}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
