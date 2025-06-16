@@ -24,6 +24,7 @@ namespace CharacterController
         public UnityAction RequestDash;
         public UnityAction RequestBulletJump;
         public UnityAction RequestInteract;
+        public UnityAction CancelInteract;
         
         private InputStateVariable _currentState;
         
@@ -46,7 +47,6 @@ namespace CharacterController
             }
             if (!_currentState)
             {
-                Debug.LogWarning("No InputStateVariable set on InputReaderSO. Automatically created instance.");
                 _currentState = CreateInstance<InputStateVariable>();
             }
             _inputSystem.Enable();
@@ -78,8 +78,16 @@ namespace CharacterController
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            
-            if(context.started) RequestInteract?.Invoke();
+
+            if (context.started)
+            {
+                RequestInteract?.Invoke();
+            }
+
+            if (context.canceled)
+            {
+                CancelInteract?.Invoke();
+            }
         }
 
         public void OnCrouch(InputAction.CallbackContext context)
@@ -161,7 +169,6 @@ namespace CharacterController
 
         public void SetInputState(InputState state)
         {
-            Debug.Log($"Setting InputState to {state}");
             DisableAllMaps();
             switch (state)
             {
@@ -177,12 +184,6 @@ namespace CharacterController
                     return;
             }
             _inputStateStack.Push(state);
-
-            Debug.Log("--- Stack Start ---");
-            foreach (InputState inputState in _inputStateStack)
-            {
-                Debug.Log($"InputStateStack: {inputState}");
-            }
         }
         #endregion
     }

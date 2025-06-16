@@ -5,10 +5,10 @@ namespace ImprovedTimers {
     public abstract class Timer : IDisposable {
         public float CurrentTime { get; protected set; }
         public bool IsRunning { get; private set; }
+        public bool IsPaused { get; private set; }
 
         protected float initialTime;
-
-        public float Progress => Mathf.Clamp(CurrentTime / initialTime, 0, 1);
+        
 
         public Action OnTimerRaised = delegate { };
         public Action OnTimerEnd = delegate { };
@@ -18,8 +18,16 @@ namespace ImprovedTimers {
         }
 
         public void Start() {
+            
+            if (IsPaused && !IsFinished)
+            {
+                Resume();
+                return;
+            }
+            
             CurrentTime = initialTime;
             if (!IsRunning) {
+                IsPaused = true;
                 IsRunning = true;
                 TimerManager.RegisterTimer(this);
                 OnTimerRaised.Invoke();
@@ -27,7 +35,9 @@ namespace ImprovedTimers {
         }
 
         public void Stop() {
-            if (IsRunning) {
+            if (IsRunning)
+            {
+                IsPaused = false;
                 IsRunning = false;
                 TimerManager.DeregisterTimer(this);
                 OnTimerEnd.Invoke();
@@ -36,11 +46,24 @@ namespace ImprovedTimers {
 
         public abstract void Tick();
         public abstract bool IsFinished { get; }
+        public abstract float Progress { get; }
+        public void Resume()
+        {
+            IsPaused = false;
+            IsRunning = true;
+        }
 
-        public void Resume() => IsRunning = true;
-        public void Pause() => IsRunning = false;
+        public void Pause()
+        {
+            IsPaused = true;
+            IsRunning = false;
+        }
 
-        public virtual void Reset() => CurrentTime = initialTime;
+        public virtual void Reset()
+        {
+            IsPaused = false;
+            CurrentTime = initialTime;
+        }
 
         public virtual void Reset(float newTime) {
             initialTime = newTime;
