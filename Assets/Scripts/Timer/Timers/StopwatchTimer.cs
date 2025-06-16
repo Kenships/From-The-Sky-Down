@@ -14,5 +14,6 @@ namespace ImprovedTimers {
         }
 
         public override bool IsFinished => false;
+        public override float Progress => 0;
     }
 }

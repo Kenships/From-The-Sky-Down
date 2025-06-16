@@ -1,9 +1,9 @@
 using System;
-using DefaultNamespace;
 using KinematicCharacterController;
 using UnityEngine;
 using Utilities;
 using ImprovedTimers;
+using Interaction;
 using Obvious.Soap;
 using UnityEngine.Serialization;
 
@@ -105,20 +105,8 @@ namespace CharacterController
 
         private void OnEnable()
         {
-            //TODO: Interact should be in a separate module
-            inputReader.RequestInteract += () =>
-            {
-                Collider[] buffer = new Collider[32];
-                int count = Physics.OverlapSphereNonAlloc(transform.position, 3f, buffer);
-                for (int i = 0; i < count; i++)
-                {
-                    Collider c = buffer[i];
-                    if (c.TryGetComponent(out InteractObject interactObject))
-                    {
-                        interactObject.Interact();
-                    }
-                }
-            };
+            inputReader.SetInputState(InputState.Movement);
+            
             inputReader.RequestInputDirection += SetCurrentMovementDirectionNormalized;
             inputReader.RequestJump += RequestJump;
             inputReader.RequestDash += RequestDash;
@@ -132,6 +120,8 @@ namespace CharacterController
 
         private void OnDisable()
         {
+            inputReader.SetInputState(InputState.Default);
+            
             inputReader.RequestInputDirection -= SetCurrentMovementDirectionNormalized;
             inputReader.RequestJump -= RequestJump;
             inputReader.RequestDash -= RequestDash;
@@ -152,7 +142,7 @@ namespace CharacterController
         {
             /* Character look rotation */
             
-            if (LastVelocity.Equals(Vector3.zero)) return;
+            if (_lastGroundDirection.Equals(Vector3.zero)) return;
             
             Quaternion targetRotation = Quaternion.LookRotation(_lastGroundDirection);
             currentRotation = Quaternion.Slerp(currentRotation, targetRotation, deltaTime*rotationSpeed);

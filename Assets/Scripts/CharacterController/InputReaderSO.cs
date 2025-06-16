@@ -11,7 +11,7 @@ namespace CharacterController
     {
         Movement,
         Dialogue,
-        Any
+        Default
     }
     
     
@@ -20,17 +20,22 @@ namespace CharacterController
     {
         //PlayerActionEvents
         public UnityAction<Vector2> RequestInputDirection;
+        public UnityAction<float> ScrollDirection;
         public UnityAction RequestJump;
         public UnityAction RequestDash;
         public UnityAction RequestBulletJump;
         public UnityAction RequestInteract;
+        public UnityAction CancelInteract;
         
-        private InputStateVariable _currentState;
         
+        //State
         private Stack<InputState> _inputStateStack;
+        public UnityAction<InputState> OnStateChange;
+        
         
         //DialogueActionEvents
         public UnityAction RequestNextDialogue;
+        public UnityAction<float> DialogueScrollDirection;
     
         private InputSystem_Actions _inputSystem;
         
@@ -44,18 +49,14 @@ namespace CharacterController
                 _inputSystem.Player.SetCallbacks(this);
                 _inputSystem.Dialogue.SetCallbacks(this);
             }
-            if (!_currentState)
-            {
-                Debug.LogWarning("No InputStateVariable set on InputReaderSO. Automatically created instance.");
-                _currentState = CreateInstance<InputStateVariable>();
-            }
             _inputSystem.Enable();
-            _currentState.OnValueChanged += SetInputState;
-            SetInputState(_currentState.Value);
+            
+            //Ensure Empty State
+            DisableAllMaps();
         }
+        
         private void OnDisable()
         {
-            _currentState.OnValueChanged -= SetInputState;
             _inputSystem.Disable();
         }
 
@@ -78,8 +79,16 @@ namespace CharacterController
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            
-            if(context.started) RequestInteract?.Invoke();
+
+            if (context.started)
+            {
+                RequestInteract?.Invoke();
+            }
+
+            if (context.canceled)
+            {
+                CancelInteract?.Invoke();
+            }
         }
 
         public void OnCrouch(InputAction.CallbackContext context)
@@ -122,6 +131,17 @@ namespace CharacterController
             }
         }
         
+        public void OnScroll(InputAction.CallbackContext context)
+        {
+            //Extract Scroll Y direction
+            Vector2 scrollDirection = context.ReadValue<Vector2>();
+            
+            if (context.performed)
+            {
+                ScrollDirection?.Invoke(scrollDirection.y);
+            }
+        }
+
         #endregion
         
         #region Dialogue Actions
@@ -149,9 +169,34 @@ namespace CharacterController
         {
             if (context.started) RequestNextDialogue?.Invoke();
         }
+
+        public void OnDS_Scroll(InputAction.CallbackContext context)
+        {
+            //Extract Scroll Y direction
+            Vector2 scrollDirection = context.ReadValue<Vector2>();
+            
+            if (context.performed)
+            {
+                DialogueScrollDirection?.Invoke(scrollDirection.y);
+            }
+        }
+
         #endregion
         
         #region Utility Methods
+
+        private void DisableCursor()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        private void EnableCursor()
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        
         private void DisableAllMaps()
         {
             _inputSystem.Player.Disable();
@@ -161,28 +206,32 @@ namespace CharacterController
 
         public void SetInputState(InputState state)
         {
-            Debug.Log($"Setting InputState to {state}");
             DisableAllMaps();
             switch (state)
             {
                 case InputState.Movement:
                     _inputSystem.Player.Enable();
+                    DisableCursor();
                     break;
                 case InputState.Dialogue:
                     _inputSystem.Dialogue.Enable();
+                    EnableCursor();
                     break;
                 default:
-                    _inputStateStack.Pop();
-                    SetInputState(_inputStateStack.Pop());
+                    if (_inputStateStack.Count >= 2)
+                    {
+                        _inputStateStack.Pop();
+                        SetInputState(_inputStateStack.Pop());
+                    }
+                    else if (_inputStateStack.Count == 0)
+                    {
+                        Debug.LogWarning("Input state stack is empty. Default action map has been set to Movement.");
+                        SetInputState(InputState.Movement);
+                    }
                     return;
             }
             _inputStateStack.Push(state);
-
-            Debug.Log("--- Stack Start ---");
-            foreach (InputState inputState in _inputStateStack)
-            {
-                Debug.Log($"InputStateStack: {inputState}");
-            }
+            OnStateChange?.Invoke(state);
         }
         #endregion
     }

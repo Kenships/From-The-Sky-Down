@@ -441,7 +441,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7922791102091982294}
   - component: {fileID: 448520568481828412}
-  - component: {fileID: 5805488675566423344}
   - component: {fileID: 4863001551779487064}
   m_Layer: 5
   m_Name: ChoicesContainer
@@ -478,36 +477,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8675476438936000655}
   m_CullTransparentMesh: 1
---- !u!114 &5805488675566423344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8675476438936000655}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &4863001551779487064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,7 +577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2119247431395915005, guid: 43d5ac137ded7914789ecd95717d5707, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -800
+      value: -773.58997
       objectReference: {fileID: 0}
     - target: {fileID: 2119247431395915005, guid: 43d5ac137ded7914789ecd95717d5707, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

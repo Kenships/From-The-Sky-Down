@@ -122,9 +122,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""852140f2-7766-474d-8707-702459ba45f3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
@@ -180,6 +180,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""7ebb560e-ef5e-4dc7-a049-e82037ab3e61"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -578,6 +587,39 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""BulletJump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Up/Down [Mouse]"",
+                    ""id"": ""2ab44bf2-e52c-414e-a712-ee9afe5a9c89"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""d300c96b-9d17-44cf-94ce-045e66c443e2"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""438aa4c3-53b0-488c-96fa-95ae383daee0"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1156,6 +1198,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DS_Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""58deb6e9-9b74-4de0-98c7-d5a5b33c3f4d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -1180,6 +1231,39 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""DS_Submit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Up/Down [Mouse]"",
+                    ""id"": ""7847cc42-b777-4d0b-9281-826e33bb934c"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DS_Scroll"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""30e850d4-c91e-443e-b03e-95f6244f3d7d"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""DS_Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""0575c526-f9da-46d8-b929-1622668af957"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""DS_Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -1336,6 +1420,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_BulletJump = m_Player.FindAction("BulletJump", throwIfNotFound: true);
+        m_Player_Scroll = m_Player.FindAction("Scroll", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1355,6 +1440,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Dialogue_DS_Click = m_Dialogue.FindAction("DS_Click", throwIfNotFound: true);
         m_Dialogue_DS_RightClick = m_Dialogue.FindAction("DS_RightClick", throwIfNotFound: true);
         m_Dialogue_DS_MiddleClick = m_Dialogue.FindAction("DS_MiddleClick", throwIfNotFound: true);
+        m_Dialogue_DS_Scroll = m_Dialogue.FindAction("DS_Scroll", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1447,6 +1533,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_BulletJump;
+    private readonly InputAction m_Player_Scroll;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1498,6 +1585,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/BulletJump".
         /// </summary>
         public InputAction @BulletJump => m_Wrapper.m_Player_BulletJump;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Scroll".
+        /// </summary>
+        public InputAction @Scroll => m_Wrapper.m_Player_Scroll;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1554,6 +1645,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @BulletJump.started += instance.OnBulletJump;
             @BulletJump.performed += instance.OnBulletJump;
             @BulletJump.canceled += instance.OnBulletJump;
+            @Scroll.started += instance.OnScroll;
+            @Scroll.performed += instance.OnScroll;
+            @Scroll.canceled += instance.OnScroll;
         }
 
         /// <summary>
@@ -1595,6 +1689,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @BulletJump.started -= instance.OnBulletJump;
             @BulletJump.performed -= instance.OnBulletJump;
             @BulletJump.canceled -= instance.OnBulletJump;
+            @Scroll.started -= instance.OnScroll;
+            @Scroll.performed -= instance.OnScroll;
+            @Scroll.canceled -= instance.OnScroll;
         }
 
         /// <summary>
@@ -1832,6 +1929,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Dialogue_DS_Click;
     private readonly InputAction m_Dialogue_DS_RightClick;
     private readonly InputAction m_Dialogue_DS_MiddleClick;
+    private readonly InputAction m_Dialogue_DS_Scroll;
     /// <summary>
     /// Provides access to input actions defined in input action map "Dialogue".
     /// </summary>
@@ -1863,6 +1961,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Dialogue/DS_MiddleClick".
         /// </summary>
         public InputAction @DS_MiddleClick => m_Wrapper.m_Dialogue_DS_MiddleClick;
+        /// <summary>
+        /// Provides access to the underlying input action "Dialogue/DS_Scroll".
+        /// </summary>
+        public InputAction @DS_Scroll => m_Wrapper.m_Dialogue_DS_Scroll;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1904,6 +2006,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @DS_MiddleClick.started += instance.OnDS_MiddleClick;
             @DS_MiddleClick.performed += instance.OnDS_MiddleClick;
             @DS_MiddleClick.canceled += instance.OnDS_MiddleClick;
+            @DS_Scroll.started += instance.OnDS_Scroll;
+            @DS_Scroll.performed += instance.OnDS_Scroll;
+            @DS_Scroll.canceled += instance.OnDS_Scroll;
         }
 
         /// <summary>
@@ -1930,6 +2035,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @DS_MiddleClick.started -= instance.OnDS_MiddleClick;
             @DS_MiddleClick.performed -= instance.OnDS_MiddleClick;
             @DS_MiddleClick.canceled -= instance.OnDS_MiddleClick;
+            @DS_Scroll.started -= instance.OnDS_Scroll;
+            @DS_Scroll.performed -= instance.OnDS_Scroll;
+            @DS_Scroll.canceled -= instance.OnDS_Scroll;
         }
 
         /// <summary>
@@ -2105,6 +2213,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBulletJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Scroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnScroll(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
@@ -2226,5 +2341,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDS_MiddleClick(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DS_Scroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDS_Scroll(InputAction.CallbackContext context);
     }
 }
