@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66e12ead1a024f478e7e2b42708e6049, type: 3}
   m_Name: PlayerMovementSettings
   m_EditorClassIdentifier: 
-  <GroundedSpeed>k__BackingField: 15
-  <GroundedAcceleration>k__BackingField: 6
+  <GroundedSpeed>k__BackingField: 6
+  <GroundedAcceleration>k__BackingField: 10
   <AirControlStrength>k__BackingField: 70
   <MaxAirSpeed>k__BackingField: 12
