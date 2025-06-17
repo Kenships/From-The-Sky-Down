@@ -70,3 +70,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Large Assets
+**/POLY STYLE - Fantasy Treasure Chest/
+**/POLY STYLE - Fantasy Treasure Chest.meta
