@@ -649,7 +649,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Cancel"",
                     ""type"": ""Button"",
                     ""id"": ""15cef263-9014-4fd5-94d9-4e4a6234a6ef"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1343,6 +1343,237 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Interaction"",
+            ""id"": ""0d3a09d4-d4e5-407c-bcde-59b3700071cb"",
+            ""actions"": [
+                {
+                    ""name"": ""Item_Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""79347b83-4e1d-4432-a253-d5f74ea034f7"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Item_Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa574a41-411b-43e5-963e-a951a39b7490"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Item_AltInteract"",
+                    ""type"": ""Button"",
+                    ""id"": ""fa92a2da-1c61-4d8b-843d-1231f119a30a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Item_Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""6265a5e7-703f-47ce-98b9-157806ecef81"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""e765783a-6947-4b20-b77e-b6062e626c7a"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f9e67894-720f-4db5-ab4d-126166253d77"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_AltInteract"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Up/Down [Mouse]"",
+                    ""id"": ""9c6ac02f-803d-4125-b839-32c533787e52"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Item_Scroll"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""efb3bde3-a905-43e7-8e48-05d2a33748bd"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Item_Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""b558f8fe-600a-4951-ba57-37e619728722"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Item_Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""794ff1ab-26f9-4e84-85ed-02eee0a1d2dd"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""WASD"",
+                    ""id"": ""97a25437-1515-43c9-a798-1124efee21a7"",
+                    ""path"": ""Dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""52f9ca28-6b73-4c4f-849b-d14a46eae637"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""be5fbfed-3e52-451e-92fb-ae390318cb2f"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""1f21bffd-eb11-4b8d-9241-36abc109761f"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""98a701f3-bcac-4a5a-abe4-aab1b72fe38d"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""c9f6d549-10d3-4108-82e9-f0671bd88efe"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""3a6cbaa9-59a7-4d31-935e-0de5f9649d78"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""83c3fb7e-6bef-41ec-8e0f-d389cf11e143"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""54e59afe-4917-4b86-a45a-06fec0d78441"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""27ba6b6e-4445-4c13-ae08-ab2fdd4590e7"",
+                    ""path"": ""<XRController>/{Primary2DAxis}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""XR"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5fdc3da1-26c7-4940-b6cf-704f1a909d06"",
+                    ""path"": ""<Joystick>/stick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Joystick"",
+                    ""action"": ""Item_Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1441,6 +1672,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Dialogue_DS_RightClick = m_Dialogue.FindAction("DS_RightClick", throwIfNotFound: true);
         m_Dialogue_DS_MiddleClick = m_Dialogue.FindAction("DS_MiddleClick", throwIfNotFound: true);
         m_Dialogue_DS_Scroll = m_Dialogue.FindAction("DS_Scroll", throwIfNotFound: true);
+        // Interaction
+        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
+        m_Interaction_Item_Move = m_Interaction.FindAction("Item_Move", throwIfNotFound: true);
+        m_Interaction_Item_Interact = m_Interaction.FindAction("Item_Interact", throwIfNotFound: true);
+        m_Interaction_Item_AltInteract = m_Interaction.FindAction("Item_AltInteract", throwIfNotFound: true);
+        m_Interaction_Item_Scroll = m_Interaction.FindAction("Item_Scroll", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1448,6 +1685,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputSystem_Actions.UI.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Dialogue.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Dialogue.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Interaction.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Interaction.Disable() has not been called.");
     }
 
     /// <summary>
@@ -2071,6 +2309,135 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="DialogueActions" /> instance referencing this action map.
     /// </summary>
     public DialogueActions @Dialogue => new DialogueActions(this);
+
+    // Interaction
+    private readonly InputActionMap m_Interaction;
+    private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
+    private readonly InputAction m_Interaction_Item_Move;
+    private readonly InputAction m_Interaction_Item_Interact;
+    private readonly InputAction m_Interaction_Item_AltInteract;
+    private readonly InputAction m_Interaction_Item_Scroll;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Interaction".
+    /// </summary>
+    public struct InteractionActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public InteractionActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Interaction/Item_Move".
+        /// </summary>
+        public InputAction @Item_Move => m_Wrapper.m_Interaction_Item_Move;
+        /// <summary>
+        /// Provides access to the underlying input action "Interaction/Item_Interact".
+        /// </summary>
+        public InputAction @Item_Interact => m_Wrapper.m_Interaction_Item_Interact;
+        /// <summary>
+        /// Provides access to the underlying input action "Interaction/Item_AltInteract".
+        /// </summary>
+        public InputAction @Item_AltInteract => m_Wrapper.m_Interaction_Item_AltInteract;
+        /// <summary>
+        /// Provides access to the underlying input action "Interaction/Item_Scroll".
+        /// </summary>
+        public InputAction @Item_Scroll => m_Wrapper.m_Interaction_Item_Scroll;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="InteractionActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="InteractionActions" />
+        public void AddCallbacks(IInteractionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InteractionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Add(instance);
+            @Item_Move.started += instance.OnItem_Move;
+            @Item_Move.performed += instance.OnItem_Move;
+            @Item_Move.canceled += instance.OnItem_Move;
+            @Item_Interact.started += instance.OnItem_Interact;
+            @Item_Interact.performed += instance.OnItem_Interact;
+            @Item_Interact.canceled += instance.OnItem_Interact;
+            @Item_AltInteract.started += instance.OnItem_AltInteract;
+            @Item_AltInteract.performed += instance.OnItem_AltInteract;
+            @Item_AltInteract.canceled += instance.OnItem_AltInteract;
+            @Item_Scroll.started += instance.OnItem_Scroll;
+            @Item_Scroll.performed += instance.OnItem_Scroll;
+            @Item_Scroll.canceled += instance.OnItem_Scroll;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="InteractionActions" />
+        private void UnregisterCallbacks(IInteractionActions instance)
+        {
+            @Item_Move.started -= instance.OnItem_Move;
+            @Item_Move.performed -= instance.OnItem_Move;
+            @Item_Move.canceled -= instance.OnItem_Move;
+            @Item_Interact.started -= instance.OnItem_Interact;
+            @Item_Interact.performed -= instance.OnItem_Interact;
+            @Item_Interact.canceled -= instance.OnItem_Interact;
+            @Item_AltInteract.started -= instance.OnItem_AltInteract;
+            @Item_AltInteract.performed -= instance.OnItem_AltInteract;
+            @Item_AltInteract.canceled -= instance.OnItem_AltInteract;
+            @Item_Scroll.started -= instance.OnItem_Scroll;
+            @Item_Scroll.performed -= instance.OnItem_Scroll;
+            @Item_Scroll.canceled -= instance.OnItem_Scroll;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="InteractionActions.UnregisterCallbacks(IInteractionActions)" />.
+        /// </summary>
+        /// <seealso cref="InteractionActions.UnregisterCallbacks(IInteractionActions)" />
+        public void RemoveCallbacks(IInteractionActions instance)
+        {
+            if (m_Wrapper.m_InteractionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="InteractionActions.AddCallbacks(IInteractionActions)" />
+        /// <seealso cref="InteractionActions.RemoveCallbacks(IInteractionActions)" />
+        /// <seealso cref="InteractionActions.UnregisterCallbacks(IInteractionActions)" />
+        public void SetCallbacks(IInteractionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InteractionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="InteractionActions" /> instance referencing this action map.
+    /// </summary>
+    public InteractionActions @Interaction => new InteractionActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2348,5 +2715,41 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDS_Scroll(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Interaction" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="InteractionActions.AddCallbacks(IInteractionActions)" />
+    /// <seealso cref="InteractionActions.RemoveCallbacks(IInteractionActions)" />
+    public interface IInteractionActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Item_Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnItem_Move(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Item_Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnItem_Interact(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Item_AltInteract" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnItem_AltInteract(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Item_Scroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnItem_Scroll(InputAction.CallbackContext context);
     }
 }

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
-using CharacterController;
 using DialogueSystem.Data;
 using DialogueSystem.Enumerations;
 using DialogueSystem.ScriptableObjects;
 using Obvious.Soap;
+using Player.Input;
 using TMPro;
+using UI.Elements;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

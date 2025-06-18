@@ -1,4 +1,4 @@
-using System;
+
 using UnityEngine;
 using ImprovedTimers;
 
@@ -6,16 +6,16 @@ namespace Utilities
 {
     public class TestLoggerObject : MonoBehaviour
     {
-        private CountdownTimer timer;
+        private CountdownTimer _timer;
         public void Awake()
         {
-            timer = new CountdownTimer(1f);
+            _timer = new CountdownTimer(1f);
             //timer.Loop();
-            timer.OnTimerEnd += () => Logger.Log("Timer started");
+            _timer.OnTimerEnd += () => Logger.Log("Timer started");
         }
         public void Update()
         {
-            timer.Tick();
+            _timer.Tick();
         }
     }
 }

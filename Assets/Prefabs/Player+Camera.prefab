@@ -46,8 +46,8 @@ GameObject:
   - component: {fileID: 7116936137257488538}
   - component: {fileID: 904282227952983133}
   - component: {fileID: 7831310694881944026}
-  - component: {fileID: 6340446451219566626}
   - component: {fileID: 6150021749115274866}
+  - component: {fileID: 9102627167983629223}
   m_Layer: 6
   m_Name: FreeLook Camera
   m_TagString: Untagged
@@ -64,7 +64,7 @@ Transform:
   m_GameObject: {fileID: 8253062811810815700}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22404534, y: -0.001250175, z: 0.0002874022, w: 0.97457796}
-  m_LocalPosition: {x: 0, y: 3.671, z: -5.027}
+  m_LocalPosition: {x: 0, y: 3.6709995, z: -5.0270004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -199,7 +199,7 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 0.5, y: 0.5}
+  Damping: {x: 0, y: 0}
   Lookahead:
     Enabled: 0
     Time: 0
@@ -221,64 +221,6 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
---- !u!114 &6340446451219566626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8253062811810815700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89875cdc57c54474a8a74efd9b2a3b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ScanRecursively: 1
-  SuppressInputWhileBlending: 1
-  IgnoreTimeScale: 0
-  m_ControllerManager:
-    Controllers:
-    - Name: Look Orbit X
-      Owner: {fileID: 7116936137257488538}
-      Enabled: 1
-      Input:
-        InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: 1
-        LegacyInput: 
-        LegacyGain: 1
-        CancelDeltaTime: 0
-      InputValue: 0
-      Driver:
-        AccelTime: 0.2
-        DecelTime: 0.2
-    - Name: Look Orbit Y
-      Owner: {fileID: 7116936137257488538}
-      Enabled: 1
-      Input:
-        InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: -1
-        LegacyInput: 
-        LegacyGain: 1
-        CancelDeltaTime: 0
-      InputValue: 0
-      Driver:
-        AccelTime: 0.2
-        DecelTime: 0.2
-    - Name: Orbit Scale
-      Owner: {fileID: 7116936137257488538}
-      Enabled: 1
-      Input:
-        InputAction: {fileID: 5082991133974614888, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
-        Gain: -1
-        LegacyInput: 
-        LegacyGain: 1
-        CancelDeltaTime: 0
-      InputValue: 0
-      Driver:
-        AccelTime: 0
-        DecelTime: 0
-  PlayerIndex: -1
-  AutoEnableInputs: 1
 --- !u!114 &6150021749115274866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,6 +260,66 @@ MonoBehaviour:
     NearLimit: 5
     FarLimit: 30
     MaxQualityBoost: 0.2
+--- !u!114 &9102627167983629223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8253062811810815700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51cde30516a54641bcf0ada35ba22454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScanRecursively: 1
+  SuppressInputWhileBlending: 1
+  IgnoreTimeScale: 0
+  m_ControllerManager:
+    Controllers:
+    - Name: Look Orbit X
+      Owner: {fileID: 7116936137257488538}
+      Enabled: 1
+      Input:
+        InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
+        Gain: 1
+        LegacyInput: 
+        LegacyGain: 1
+        CancelDeltaTime: 0
+      InputValue: 0
+      Driver:
+        AccelTime: 0.2
+        DecelTime: 0.2
+    - Name: Look Orbit Y
+      Owner: {fileID: 7116936137257488538}
+      Enabled: 1
+      Input:
+        InputAction: {fileID: -5630151704836100654, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
+        Gain: -1
+        LegacyInput: 
+        LegacyGain: 1
+        CancelDeltaTime: 0
+      InputValue: 0
+      Driver:
+        AccelTime: 0.2
+        DecelTime: 0.2
+    - Name: Orbit Scale
+      Owner: {fileID: 7116936137257488538}
+      Enabled: 1
+      Input:
+        InputAction: {fileID: 5082991133974614888, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
+        Gain: 10
+        LegacyInput: 
+        LegacyGain: 1
+        CancelDeltaTime: 0
+      InputValue: 0
+      Driver:
+        AccelTime: 0
+        DecelTime: 0
+  PlayerIndex: -1
+  AutoEnableInputs: 1
+  settings: {fileID: 11400000, guid: 0631978fa9a250d468c826066616426a, type: 2}
+  inputReader: {fileID: 11400000, guid: 4b05685e332b17b49a8987b779e514cd, type: 2}
 --- !u!1001 &197354234670423715
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -370,16 +372,55 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5902174483394360310, guid: b06c5746a84189c4996a0bbc44c0c50a, type: 3}
+      propertyPath: currentInteractable
+      value: 
+      objectReference: {fileID: 11400000, guid: 77f9cc9a7804ec34ca4bdf53c43a303e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3841291985187139892, guid: b06c5746a84189c4996a0bbc44c0c50a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5627508056177749345}
   m_SourcePrefab: {fileID: 100100000, guid: b06c5746a84189c4996a0bbc44c0c50a, type: 3}
 --- !u!4 &807781429935634618 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 687067564371306009, guid: b06c5746a84189c4996a0bbc44c0c50a, type: 3}
   m_PrefabInstance: {fileID: 197354234670423715}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4031326484392144791 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3841291985187139892, guid: b06c5746a84189c4996a0bbc44c0c50a, type: 3}
+  m_PrefabInstance: {fileID: 197354234670423715}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &5627508056177749345
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031326484392144791}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &4518108068299568198 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4327589775388273381, guid: b06c5746a84189c4996a0bbc44c0c50a, type: 3}

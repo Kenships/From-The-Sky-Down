@@ -1,4 +1,5 @@
 using Interaction;
+using Interaction.Interfaces;
 using UnityEngine;
 using Obvious.Soap;
 
