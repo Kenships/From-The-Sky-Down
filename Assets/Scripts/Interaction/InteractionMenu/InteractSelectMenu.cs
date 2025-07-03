@@ -16,7 +16,7 @@ namespace Interaction.InteractionMenu
         [SerializeField] private GameObject choiceButtonPrefab;
         [SerializeField] private InputReaderSO inputReader;
         [SerializeField] private IInteractableVariable currentInteractable;
-        private readonly Dictionary<GameObject, CallbackButton> _activeButtonsDictionary = new();
+        private readonly Dictionary<IInteractable, CallbackButton> _activeButtonsDictionary = new();
         private int _currentSelectionIndex;
         
         
@@ -60,8 +60,9 @@ namespace Interaction.InteractionMenu
             GameObject bogie = bogieInfo.Bogie;
 
             //Return if not interactable
-            if (bogie.TryGetComponent(out IInteractable interactable))
-            {
+            IInteractable[] interactables = bogie.GetComponents<IInteractable>();
+            
+            foreach (IInteractable interactable in interactables){
                 if (bogieInfo.InRange)
                 {
                     CallbackButton button = Instantiate(choiceButtonPrefab, transform).GetComponent<CallbackButton>();
@@ -71,8 +72,8 @@ namespace Interaction.InteractionMenu
                         mode = Navigation.Mode.None
                     };
                     button.navigation = noNav;
-                    _activeButtonsDictionary.Add(bogie, button);
-                    button.SetText(bogie.name);
+                    _activeButtonsDictionary.Add(interactable, button);
+                    button.SetText(interactable.Name);
                     button.SetSelectCallBack(() =>
                     {
                         currentInteractable.Value = interactable;
@@ -91,7 +92,7 @@ namespace Interaction.InteractionMenu
                 }
                 else
                 {
-                    CallbackButton button = _activeButtonsDictionary[bogie];
+                    CallbackButton button = _activeButtonsDictionary[interactable];
                     Destroy(button.gameObject);
                     
                     int buttonIndex = button.transform.GetSiblingIndex();
@@ -101,16 +102,16 @@ namespace Interaction.InteractionMenu
                         ScrollSelect(-1f);
                     }
                     
-                    _activeButtonsDictionary.Remove(bogie);
+                    _activeButtonsDictionary.Remove(interactable);
                     
                     if (_activeButtonsDictionary.Count == 0)
                     {
                         currentInteractable.Value = null;
                     }
                 }
-                LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
             }
-
+            LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
+            
             if (bogie.TryGetComponent(out IHoverable hoverable))
             {
                 if (bogieInfo.InRange)

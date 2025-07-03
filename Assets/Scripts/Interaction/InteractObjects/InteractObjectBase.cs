@@ -8,6 +8,13 @@ namespace Interaction.InteractObjects
     {
         private bool _isInteracting;
 
+        public virtual string Name
+        {
+            get => _name ?? name; 
+            set => _name = value; 
+        }
+        private string _name;
+
         public virtual void Interact()
         {
             if (_isInteracting)

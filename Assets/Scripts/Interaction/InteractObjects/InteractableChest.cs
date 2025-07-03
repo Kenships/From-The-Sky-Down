@@ -13,6 +13,8 @@ namespace Interaction.InteractObjects
         
         private void Start()
         {
+            
+            
             _timer.OnTimerEnd += () =>
             {
                 particle.Play();
