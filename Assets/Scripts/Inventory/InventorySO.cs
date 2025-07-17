@@ -8,24 +8,21 @@ using UnityEngine;
 
 namespace Inventory
 {
-    public enum ItemStackType
-    {
-        Unstackable,
-        SmallStack,
-        LargeStack,
-        Unlimited
-    }
-    
     [CreateAssetMenu(fileName = "InventorySO", menuName = "Scriptable Object/Inventory/InventorySO")]
     public class InventorySO : ScriptableObject
     {
-        [SerializeField] private SerializedDictionary<ItemStackType, int> stackMaximums;
-        [SerializeField] private List<ItemStack> inventory = new();
-        [SerializeField] private int inventorySize;
+        [SerializeField]
+        private SerializedDictionary<ItemStackType, int> stackMaximums;
+
+        [SerializeField]
+        private int inventorySize;
+
+        private List<ItemStack> _inventoryStacks;
+        private Dictionary<ItemId, int> _itemTotalsCache;
         private List<ItemFilter> _filters;
-        
-        public int Vacancy => inventorySize - inventory.Count;
-        public bool IsFull => inventorySize == inventory.Count;
+
+        public int Vacancy => inventorySize - _inventoryStacks.Count;
+        public bool IsFull => inventorySize == _inventoryStacks.Count;
 
         private void OnEnable()
         {
@@ -38,13 +35,21 @@ namespace Inventory
             {
                 stackMaximums.TryAdd(currencyType, 1);
             }
-            
+
+            _inventoryStacks ??= new List<ItemStack>();
+            _itemTotalsCache ??= new Dictionary<ItemId, int>();
             _filters ??= new List<ItemFilter>();
         }
 
         public void AddFilter(ItemFilter itemFilter)
         {
             _filters.Add(itemFilter);
+        }
+
+        public void AddTypeFilter<T>() where T : GameItemSO
+        {
+            TypeFilter<T> filter = new TypeFilter<T>();
+            AddFilter(filter);
         }
 
         public void AddAllFilters(List<ItemFilter> filters)
@@ -62,52 +67,83 @@ namespace Inventory
             _filters.Remove(itemFilter);
         }
 
-        public void PresetInventory(List<ItemStack> inventory)
+        public void PresetInventory(List<ItemStack> inventoryStacks)
         {
-            this.inventory = inventory;
+            _inventoryStacks = inventoryStacks;
         }
 
         public bool TryAddItem(GameItemSO item, int count)
         {
             //TODO: better way to handle input validation
-            
+
             #region Input Validation
-            
+
             if (_filters.Any(filter => !filter.Validate(item)))
             {
                 return false;
             }
-            
-            if (count < 0) Debug.LogError($"InventorySO: TryAddItem: Tried to add {count} but count " +
-                                          $"cannot be negative.");
-            
-            int spaceRemaining = Vacancy * stackMaximums[item.ItemStackType] + 
-                                 inventory.Where(itemStack => itemStack.ItemName == item.ItemName)
-                                     .Sum(itemStack => itemStack.VacancyCount);
-            
-            if (count > spaceRemaining) return false;
-            #endregion
-            
-            int remainingCount = count;
-            
-            foreach (ItemStack itemStack in inventory)
+
+            if (count < 0)
             {
-                if (remainingCount == 0) break;
-                
-                if (itemStack.TryAdd(item, remainingCount, out int stackSuccessfulCount))
+                Debug.LogError($"InventorySO: TryAddItem: Tried to add {count} but count " +
+                               "cannot be negative.");
+            }
+
+            int spaceRemaining;
+
+            if (_itemTotalsCache.TryGetValue(item.ItemId, out int value))
+            {
+                spaceRemaining = value;
+            }
+            else
+            {
+                spaceRemaining = Vacancy * stackMaximums[item.ItemStackType] +
+                                 _inventoryStacks.Where(itemStack => itemStack.ItemName == item.ItemName)
+                                     .Sum(itemStack => itemStack.VacancyCount);
+                _itemTotalsCache[item.ItemId] = spaceRemaining;
+            }
+
+            if (count > spaceRemaining)
+            {
+                return false;
+            }
+
+            #endregion
+
+            int remainingCount = count;
+
+            foreach (ItemStack itemStack in _inventoryStacks)
+            {
+                if (remainingCount == 0)
                 {
-                    remainingCount -= stackSuccessfulCount;
+                    break;
+                }
+
+                if (itemStack.TryFill(item, remainingCount, out int successfulCount))
+                {
+                    remainingCount -= successfulCount;
+
+                    if (!_itemTotalsCache.TryAdd(item.ItemId, successfulCount))
+                    {
+                        _itemTotalsCache[item.ItemId] += successfulCount;
+                    }
                 }
             }
-            
+
             while (remainingCount > 0 || !IsFull)
             {
-                ItemStack itemStack = new ItemStack(item, stackMaximums[item.ItemStackType]);
-                if (itemStack.TryAdd(item, remainingCount, out int stackSuccessfulCount))
+                var itemStack = new ItemStack(item, stackMaximums[item.ItemStackType]);
+                if (itemStack.TryFill(item, remainingCount, out int successfulCount))
                 {
-                    remainingCount -= stackSuccessfulCount;
+                    remainingCount -= successfulCount;
+
+                    if (!_itemTotalsCache.TryAdd(item.ItemId, successfulCount))
+                    {
+                        _itemTotalsCache[item.ItemId] += successfulCount;
+                    }
                 }
-                inventory.Add(itemStack);
+
+                _inventoryStacks.Add(itemStack);
             }
 
             return true;
@@ -115,89 +151,58 @@ namespace Inventory
 
         public bool TryRemoveItem(GameItemSO item, int count)
         {
+            
             #region Input Validation
-            if (count < 0) Debug.LogError($"InventorySO: TryRemoveItem: Tried to remove {count} but count cannot be negative.");
 
-            int countInStorage = 0;
-
-            foreach (ItemStack itemStack in inventory)
+            if (count < 0)
             {
-                if (itemStack.ItemName == item.ItemName)
-                {
-                    countInStorage += itemStack.Count;
-                }
+                Debug.LogError($"InventorySO: TryRemoveItem: Tried to remove {count} but count cannot be negative.");
+            }
+
+            int itemTotal;
+
+            if (_itemTotalsCache.TryGetValue(item.ItemId, out int value))
+            {
+                itemTotal = value;
+            }
+            else
+            {
+                itemTotal = _inventoryStacks.Where(itemStack => itemStack.ItemId == item.ItemId).Sum(itemStack => itemStack.Count);
+                _itemTotalsCache[item.ItemId] = itemTotal;
             }
             
-            if (count > countInStorage) return false;
+            if (count > itemTotal)
+            {
+                return false;
+            }
+
             #endregion
+            List<ItemStack> itemsInInventory =
+                _inventoryStacks.Where(itemStack => itemStack.ItemId == item.ItemId).ToList();
+
             
             int remainingCount = count;
-            
-            for (int i = count - 1; i >= 0; i--)
+            foreach (ItemStack itemStack in itemsInInventory)
             {
-                if (remainingCount == 0) break;
-                
-                ItemStack itemStack = inventory[i];
-                if (itemStack.TryRemove(item, count, out int stackSuccessfulCount))
+                if (remainingCount == 0)
                 {
-                    remainingCount -= stackSuccessfulCount;
+                    break;
+                }
+
+                if (itemStack.TryRemove(item, count, out int successfulCount))
+                {
+                    remainingCount -= successfulCount;
+
+                    _itemTotalsCache[item.ItemId] -= successfulCount;
                 }
             }
-            
+
+            if (_itemTotalsCache[item.ItemId] == 0)
+            {
+                _itemTotalsCache.Remove(item.ItemId);
+            }
+
             return true;
         }
-    }
-
-    [Serializable]
-    public class ItemStack
-    {
-        public ItemStack(GameItemSO item, int maxCount = 1)
-        {
-            Item = item;
-            MaxCount = maxCount;
-        }
-
-        public bool TryAdd(GameItemSO item, int count, out int successfulCount)
-        {
-            successfulCount = 0;
-            
-            
-            if (item.ItemName == ItemName)
-            {
-                successfulCount = Mathf.Min(VacancyCount, count);
-                Count += successfulCount;
-
-                return successfulCount > 0;
-            }
-
-            return false;
-        }
-
-        public bool TryRemove(GameItemSO item, int count, out int successfulCount)
-        {
-            successfulCount = 0;
-
-            if (item.ItemName == ItemName)
-            {
-                successfulCount = Mathf.Min(Count, count);
-                Count -= successfulCount;
-                
-                return successfulCount > 0;
-            }
-            
-            return false;
-        }
-        
-        public GameItemSO Item {get; private set; }
-        public int Count {get; private set; }
-        public int MaxCount { get; private set; }
-        public bool IsEmpty => Count == 0;
-        public bool IsStackable => MaxCount > 1;
-        public bool IsFull => Count >= MaxCount;
-        public int VacancyCount => MaxCount - Count;
-        public string ItemName => Item.ItemName;
-        public Sprite ItemSprite => Item.ItemSprite;
-        public GameObject ItemPrefab => Item.ItemPrefab;
-        public ItemStackType ItemStackType => Item.ItemStackType;
     }
 }

@@ -2,12 +2,17 @@ using UnityEngine;
 
 namespace Inventory.Item
 {
-    [CreateAssetMenu(fileName = "GameItemSO", menuName = "Scriptable Object/Inventory/GameItemSO")]
-    public class GameItemSO : ScriptableObject
+    public abstract class GameItemSO : ScriptableObject
     {
+        public ItemId ItemId;
+        [Space(10)]
         public string ItemName;
+        public string ItemDescription;
+        [Space(10)]
+        public ItemStackType ItemStackType;
+        [Space(10)]
         public Sprite ItemSprite;
         public GameObject ItemPrefab;
-        public ItemStackType ItemStackType;
+        
     }
 }
