@@ -1,5 +1,6 @@
 using Interaction.Interfaces;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Interaction.InteractObjects
 {
@@ -8,10 +9,13 @@ namespace Interaction.InteractObjects
     {
         private bool _isInteracting;
 
+        public UnityAction OnInteract;
+        public UnityAction OnCancelInteract;
+
         public virtual string Name
         {
             get => _name ?? name; 
-            set => _name = value; 
+            set => _name = value;
         }
         private string _name;
 
@@ -24,11 +28,15 @@ namespace Interaction.InteractObjects
             }
             
             _isInteracting = true;
+
+            OnInteract?.Invoke();
         }
 
         public virtual void CancelInteract()
         {
             _isInteracting = false;
+
+            OnCancelInteract?.Invoke();
         }
         
     }
